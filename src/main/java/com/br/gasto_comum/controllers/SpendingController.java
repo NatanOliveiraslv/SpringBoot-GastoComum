@@ -1,10 +1,8 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.spending.Spending;
-import com.br.gasto_comum.spending.SpendingRequestDTO;
-import com.br.gasto_comum.spending.SpendingRepository;
-import com.br.gasto_comum.spending.SpendingResponseDTO;
+import com.br.gasto_comum.spending.*;
 import com.br.gasto_comum.users.UserRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +24,9 @@ public class SpendingController {
     public ResponseEntity<SpendingResponseDTO> createSpending(@RequestBody @Valid SpendingRequestDTO data, UriComponentsBuilder uriBuilder) {
         var spendingEntity = new Spending(data);
 
-        var user = userRepository.findById(data.userID()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));;
+        System.out.println("ID do usuário: " + data.userId());
+
+        var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));;
 
         spendingEntity.setUser(user);
         spendingRepository.save(spendingEntity);
@@ -40,6 +40,14 @@ public class SpendingController {
     public ResponseEntity<List<SpendingResponseDTO>> listSpending() {
         var spending = spendingRepository.findAll().stream().map(SpendingResponseDTO::new).toList();
         return ResponseEntity.ok(spending);
+    }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<SpendingResponseDetailDTO> updateSpending(@RequestBody @Valid SpendingUpdateDTO data) {
+        var spendingEntity = spendingRepository.getReferenceById(data.id());
+        spendingEntity.update(data);
+        return ResponseEntity.ok(new SpendingResponseDetailDTO(spendingEntity));
     }
 
 }

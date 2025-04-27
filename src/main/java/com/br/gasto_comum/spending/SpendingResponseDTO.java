@@ -3,17 +3,21 @@ package com.br.gasto_comum.spending;
 public record SpendingResponseDTO(
         Long id,
         Type type,
+        String title,
         Double value,
         String description,
-        String userLogin
+        String userLogin,
+        String registration_date
 ) {
     public SpendingResponseDTO(Spending spendingEntity) {
         this(
                 spendingEntity.getId(),
                 spendingEntity.getType(),
+                spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
-                spendingEntity.getUser().getLogin()
+                spendingEntity.getUser().getLogin(),
+                spendingEntity.getRegistration_date().toString()
         );
     }
 }

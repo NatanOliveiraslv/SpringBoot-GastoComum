@@ -19,6 +19,7 @@ public class Spending {
     private Long id;
     @Enumerated(EnumType.STRING)
     private Type type;
+    private String title;
     private Double value;
     //private Voucher voucher;
     private String description;
@@ -26,12 +27,26 @@ public class Spending {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime registration_date = LocalDateTime.now();
+    private LocalDateTime registration_date;
 
 
     public Spending(SpendingRequestDTO data) {
+        this.title = data.title();
         this.type = data.type();
         this.value = data.value();
         this.description = data.description();
+        this.registration_date = LocalDateTime.now();
+    }
+
+    public void update(SpendingUpdateDTO data) {
+        if (data.type() != null) {
+            this.type = data.type();
+        }
+        if (data.title() != null) {
+            this.title = data.title();
+        }
+        if (data.description() != null) {
+            this.description = data.description();
+        }
     }
 }
