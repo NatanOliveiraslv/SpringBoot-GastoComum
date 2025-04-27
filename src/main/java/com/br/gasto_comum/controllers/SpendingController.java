@@ -50,4 +50,23 @@ public class SpendingController {
         return ResponseEntity.ok(new SpendingResponseDetailDTO(spendingEntity));
     }
 
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> deleteSpending(@PathVariable Long id, @RequestBody @Valid SpendingDeleteDTO data) {
+        if (!spendingRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        var spendingEntity = spendingRepository.getReferenceById(id);
+
+        if (!spendingEntity.getUser().equals(user)) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
+
+        spendingRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
