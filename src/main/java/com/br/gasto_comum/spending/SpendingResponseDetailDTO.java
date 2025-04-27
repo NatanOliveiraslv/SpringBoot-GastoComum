@@ -1,5 +1,10 @@
 package com.br.gasto_comum.spending;
 
+import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAcconts;
+import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
+
+import java.util.List;
+
 public record SpendingResponseDetailDTO(
         Long id,
         Type type,
@@ -8,7 +13,9 @@ public record SpendingResponseDetailDTO(
         String description,
         String userName,
         String userEmail,
-        String registrationDate
+        String registrationDate,
+        List<ExpensesDividedAccontsResponseDTO> expensesDividedAcconts
+
 ) {
     public SpendingResponseDetailDTO(Spending spending) {
         this(
@@ -19,7 +26,10 @@ public record SpendingResponseDetailDTO(
                 spending.getDescription(),
                 spending.getUser().getFirstName(),
                 spending.getUser().getEmail(),
-                spending.getRegistration_date().toString()
+                spending.getRegistration_date().toString(),
+                spending.getExpensesDividedAcconts().stream()
+                        .map(ExpensesDividedAccontsResponseDTO::new)
+                        .toList()
         );
     }
 }

@@ -1,10 +1,12 @@
 package com.br.gasto_comum.spending;
 
+import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAcconts;
 import com.br.gasto_comum.users.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "Spending")
 @Table(name = "spending")
@@ -26,6 +28,9 @@ public class Spending {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany
+    @JoinColumn(name = "spending_id")
+    private List<ExpensesDividedAcconts> expensesDividedAcconts;
 
     private LocalDateTime registration_date;
 
@@ -48,5 +53,9 @@ public class Spending {
         if (data.description() != null) {
             this.description = data.description();
         }
+    }
+
+    public void addExpensesDividedAcconts(ExpensesDividedAcconts expensesDividedAcconts) {
+        this.expensesDividedAcconts.add(expensesDividedAcconts);
     }
 }

@@ -50,6 +50,14 @@ public class SpendingController {
         return ResponseEntity.ok(new SpendingResponseDetailDTO(spendingEntity));
     }
 
+    @GetMapping("/{id}")
+    @Transactional
+    public ResponseEntity<SpendingResponseDetailDTO> detailSpending(@PathVariable Long id) {
+        var spendingEntity = spendingRepository.getReferenceById(id);
+        return ResponseEntity.ok(new SpendingResponseDetailDTO(spendingEntity));
+    }
+
+
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> deleteSpending(@PathVariable Long id, @RequestBody @Valid SpendingDeleteDTO data) {
