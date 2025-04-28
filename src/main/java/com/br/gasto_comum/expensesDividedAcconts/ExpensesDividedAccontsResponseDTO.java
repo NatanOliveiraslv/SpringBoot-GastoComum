@@ -1,11 +1,4 @@
-package com.br.gasto_comum.ExpensesDividedAcconts;
-
-import com.br.gasto_comum.spending.Spending;
-import com.br.gasto_comum.users.User;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
-import java.time.LocalDateTime;
+package com.br.gasto_comum.expensesDividedAcconts;
 
 public record ExpensesDividedAccontsResponseDTO (
         Long id,

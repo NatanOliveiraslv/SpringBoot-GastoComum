@@ -1,7 +1,6 @@
 package com.br.gasto_comum.spending;
 
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAcconts;
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
+import com.br.gasto_comum.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.br.gasto_comum.ExpensesDividedAcconts;
+package com.br.gasto_comum.expensesDividedAcconts;
 
 import com.br.gasto_comum.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;

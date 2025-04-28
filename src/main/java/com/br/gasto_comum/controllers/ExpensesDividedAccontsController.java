@@ -1,13 +1,8 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAcconts;
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAccontsRepository;
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
-import com.br.gasto_comum.spending.Spending;
+import com.br.gasto_comum.expensesDividedAcconts.*;
 import com.br.gasto_comum.spending.SpendingRepository;
 import com.br.gasto_comum.spending.SpendingResponseDTO;
-import com.br.gasto_comum.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.users.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -57,13 +52,24 @@ public class ExpensesDividedAccontsController {
     }
 
     @GetMapping("/spending/{userId}")
-    public ResponseEntity<List<SpendingResponseDTO>> listSpendingByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<ExpensesDividedAccontsResponseListDTO>> listSpendingByUserId(@PathVariable Long userId) {
         var user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        var expenses = expensesDividedAccontsRepository.findByUser(user);
-        var spendings = expenses.stream()
-                .map(ExpensesDividedAcconts::getSpending)
-                .map(SpendingResponseDTO::new)
-                .toList();
-        return ResponseEntity.ok(spendings);
+        var expenses = expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
+        return ResponseEntity.ok(expenses);
+    }
+
+    @PutMapping("/pay/{id}")
+    @Transactional
+    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data) {
+
+        var expensesDividedAcconts = expensesDividedAccontsRepository.getReferenceById(id);
+
+        var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        if (!expensesDividedAcconts.getUser().equals(user)) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
+
+        expensesDividedAcconts.makePayment();
+        return ResponseEntity.ok(new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts));
     }
 }

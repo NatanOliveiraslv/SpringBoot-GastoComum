@@ -1,6 +1,6 @@
 package com.br.gasto_comum.spending;
 
-import com.br.gasto_comum.ExpensesDividedAcconts.ExpensesDividedAcconts;
+import com.br.gasto_comum.expensesDividedAcconts.ExpensesDividedAcconts;
 import com.br.gasto_comum.users.User;
 import jakarta.persistence.*;
 import lombok.*;

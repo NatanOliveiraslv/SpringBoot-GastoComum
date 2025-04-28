@@ -1,4 +1,4 @@
-package com.br.gasto_comum.ExpensesDividedAcconts;
+package com.br.gasto_comum.expensesDividedAcconts;
 
 import jakarta.validation.constraints.NotNull;
 
