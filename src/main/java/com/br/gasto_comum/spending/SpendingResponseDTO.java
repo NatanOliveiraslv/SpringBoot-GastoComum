@@ -6,8 +6,7 @@ public record SpendingResponseDTO(
         String title,
         Double value,
         String description,
-        String userLogin,
-        String registration_date
+        String userLogin
 ) {
     public SpendingResponseDTO(Spending spendingEntity) {
         this(
@@ -16,8 +15,7 @@ public record SpendingResponseDTO(
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
-                spendingEntity.getUser().getLogin(),
-                spendingEntity.getRegistration_date().toString()
+                spendingEntity.getUser().getLogin()
         );
     }
 }

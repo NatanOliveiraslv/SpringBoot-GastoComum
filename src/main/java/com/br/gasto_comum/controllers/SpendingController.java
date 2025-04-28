@@ -24,8 +24,6 @@ public class SpendingController {
     public ResponseEntity<SpendingResponseDTO> createSpending(@RequestBody @Valid SpendingRequestDTO data, UriComponentsBuilder uriBuilder) {
         var spendingEntity = new Spending(data);
 
-        System.out.println("ID do usuário: " + data.userId());
-
         var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));;
 
         spendingEntity.setUser(user);

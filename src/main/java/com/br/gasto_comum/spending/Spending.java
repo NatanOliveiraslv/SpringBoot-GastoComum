@@ -55,7 +55,19 @@ public class Spending {
         }
     }
 
+    public boolean checkIfTheUserIsSpending(User user) {
+        for (ExpensesDividedAcconts e : this.expensesDividedAcconts) {
+            if (e.getUser().equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addExpensesDividedAcconts(ExpensesDividedAcconts expensesDividedAcconts) {
+        if(checkIfTheUserIsSpending(expensesDividedAcconts.getUser())) {
+            throw new RuntimeException("Usuário já está na lista de despesas divididas");
+        }
         this.expensesDividedAcconts.add(expensesDividedAcconts);
     }
 }

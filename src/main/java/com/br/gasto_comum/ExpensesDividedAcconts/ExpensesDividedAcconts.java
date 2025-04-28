@@ -40,9 +40,4 @@ public class ExpensesDividedAcconts {
         this.status = Status.PAID;
         this.date_payment = LocalDateTime.now();
     }
-
-    public double dividedValue() {
-        return spending.getValue() / spending.getExpensesDividedAcconts().size();
-    }
-
 }
