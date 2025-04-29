@@ -24,6 +24,9 @@ public class UserController {
     @PostMapping
     @Transactional
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO data) {
+        if (userRepository.existsByLogin(data.login()) || userRepository.existsByEmail(data.email())) {
+            return ResponseEntity.badRequest().body(null); // Retorna erro 400 se login ou e-mail já existir
+        }
         var userEntity = new User(data);
         userRepository.save(userEntity);
 

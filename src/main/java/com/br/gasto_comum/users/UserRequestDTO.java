@@ -6,7 +6,7 @@ public record UserRequestDTO(
 
         @NotBlank
         String login,
-        String senha,
+        String password,
         String firstName,
         String lastName,
         String email
@@ -14,7 +14,7 @@ public record UserRequestDTO(
         public UserRequestDTO(User user) {
                 this(
                         user.getLogin(),
-                        user.getSenha(),
+                        user.getPassword(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail()
