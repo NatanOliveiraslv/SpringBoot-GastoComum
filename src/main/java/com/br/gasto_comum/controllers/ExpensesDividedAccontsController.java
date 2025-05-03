@@ -1,13 +1,13 @@
 package com.br.gasto_comum.controllers;
 
 import com.br.gasto_comum.expensesDividedAcconts.*;
-import com.br.gasto_comum.spending.SpendingRepository;
-import com.br.gasto_comum.spending.SpendingResponseDTO;
-import com.br.gasto_comum.users.UserRepository;
+import com.br.gasto_comum.service.ExpensesDividedAccontsService;
+import com.br.gasto_comum.users.User;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -18,58 +18,24 @@ import java.util.List;
 public class ExpensesDividedAccontsController {
 
     @Autowired
-    private ExpensesDividedAccontsRepository expensesDividedAccontsRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private SpendingRepository spendingRepository;
+    private ExpensesDividedAccontsService expensesDividedAccontsService;
 
     @PostMapping
     @Transactional
     public ResponseEntity<ExpensesDividedAccontsResponseDTO> createExpensesDividedAcconts(@RequestBody @Valid ExpensesDividedAccontsRequestDTO data, UriComponentsBuilder uriBuilder) {
-
-        //Aqui cria um novo objeto de despesas divididas
-        var spending = spendingRepository.getReferenceById(data.spendingId());
-        var user = userRepository.getReferenceById(data.userId());
-        spending.checkIfTheUserIsSpending(user);
-        var expensesDividedAcconts = new ExpensesDividedAcconts(user, spending);
-        expensesDividedAccontsRepository.save(expensesDividedAcconts);
-
-        //Aqui adiciona o objeto de despesas divididas na lista de despesas do objeto de despesas
-        spending.addExpensesDividedAcconts(expensesDividedAcconts);
-        spendingRepository.save(spending);
-
-        //Aqui seta o valor da despesa dividida
-        double value = spending.getValue() / (spending.getExpensesDividedAcconts().size() + 1);
-        for (ExpensesDividedAcconts e : spending.getExpensesDividedAcconts()){
-            e.setValue(value);
-            expensesDividedAccontsRepository.save(e);
-        }
-
-        var uri  = uriBuilder.path("/expenses-divided-accounts/{id}").buildAndExpand(expensesDividedAcconts.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts));
+        var ExpensesDividedAcconts = expensesDividedAccontsService.createExpensesDividedAcconts(data);
+        var uri  = uriBuilder.path("/expenses-divided-accounts/{id}").buildAndExpand(ExpensesDividedAcconts.id()).toUri();
+        return ResponseEntity.created(uri).body(ExpensesDividedAcconts);
     }
 
-    @GetMapping("/spending/{userId}")
-    public ResponseEntity<List<ExpensesDividedAccontsResponseListDTO>> listSpendingByUserId(@PathVariable Long userId) {
-        var user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        var expenses = expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
-        return ResponseEntity.ok(expenses);
+    @GetMapping("/spending")
+    public ResponseEntity<List<ExpensesDividedAccontsResponseListDTO>> listSpendingByUserId(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(expensesDividedAccontsService.listSpendingByUserId(user));
     }
 
     @PutMapping("/pay/{id}")
     @Transactional
     public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data) {
-
-        var expensesDividedAcconts = expensesDividedAccontsRepository.getReferenceById(id);
-
-        var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        if (!expensesDividedAcconts.getUser().equals(user)) {
-            return ResponseEntity.status(403).build(); // Forbidden
-        }
-
-        expensesDividedAcconts.makePayment();
-        return ResponseEntity.ok(new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts));
+        return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, data));
     }
 }

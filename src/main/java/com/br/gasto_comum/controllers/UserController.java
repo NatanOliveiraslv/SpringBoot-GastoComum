@@ -1,13 +1,16 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.users.User;
-import com.br.gasto_comum.users.UserRepository;
-import com.br.gasto_comum.users.UserRequestDTO;
-import com.br.gasto_comum.users.UserResponseDTO;
+import com.br.gasto_comum.infra.DataTokenJWT;
+import com.br.gasto_comum.infra.SecurityConfigurations;
+import com.br.gasto_comum.infra.TokenService;
+import com.br.gasto_comum.service.UserService;
+import com.br.gasto_comum.users.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,19 +22,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @PostMapping
     @Transactional
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Valid UserRequestDTO data) {
-        if (userRepository.existsByLogin(data.login()) || userRepository.existsByEmail(data.email())) {
-            return ResponseEntity.badRequest().body(null); // Retorna erro 400 se login ou e-mail já existir
-        }
-        var userEntity = new User(data);
-        userRepository.save(userEntity);
-
-        return ResponseEntity.ok(new UserResponseDTO(userEntity));
+        return ResponseEntity.ok(userService.createUser(data));
     }
 
-
+    @PostMapping("/login")
+    public ResponseEntity<DataTokenJWT> authenticate(@RequestBody @Valid AuthenticationDTO data) {
+        return ResponseEntity.ok(userService.authenticate(data));
+    }
 }

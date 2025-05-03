@@ -10,31 +10,35 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Service
 public class TokenService {
 
     @Value("${api.security.token.secret}")
-    private String secret;
+    private String SECRET_KEY;
+    private static final String ISSUER = "API Gasto Comum";
 
     public String generateToken(User user) {
-        try{
-            var algorithm = Algorithm.HMAC256(secret);
+        try {
+            // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()
-                    .withIssuer("API Gasto Comum")
-                    .withSubject(user.getLogin())
-                    .withExpiresAt(dataExpiracao())
-                    .sign(algorithm);
-        }catch (JWTCreationException e){
-            throw new RuntimeException("Erro ao gerar token", e);
+                    .withIssuer(ISSUER) // Define o emissor do token
+                    .withIssuedAt(creationDate()) // Define a data de emissão do token
+                    .withExpiresAt(expirationDate()) // Define a data de expiração do token
+                    .withSubject(user.getUsername()) // Define o assunto do token (neste caso, o nome de usuário)
+                    .sign(algorithm); // Assina o token usando o algoritmo especificado
+        } catch (JWTCreationException exception){
+            throw new JWTCreationException("Erro ao gerar token.", exception);
         }
     }
 
     public String getSubject(String token) {
         try{
-            var algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.require(algorithm)
-                    .withIssuer("API Gasto Comum")
+                    .withIssuer(ISSUER)
                     .build()
                     .verify(token)
                     .getSubject();
@@ -43,7 +47,11 @@ public class TokenService {
         }
     }
 
-    private Instant dataExpiracao() {
+    private Instant creationDate() {
+        return ZonedDateTime.now(ZoneOffset.of("-03:00")).toInstant();
+    }
+
+    private Instant expirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 
