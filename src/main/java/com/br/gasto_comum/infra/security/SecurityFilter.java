@@ -1,4 +1,4 @@
-package com.br.gasto_comum.infra;
+package com.br.gasto_comum.infra.security;
 
 import com.br.gasto_comum.users.UserRepository;
 import jakarta.servlet.FilterChain;

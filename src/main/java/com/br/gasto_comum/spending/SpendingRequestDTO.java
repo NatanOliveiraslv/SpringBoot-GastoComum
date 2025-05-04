@@ -13,9 +13,6 @@ public record SpendingRequestDTO(
         String title,
         @NotNull
         Double value,
-        String description,
-        @NotNull
-        Long userId
-
+        String description
         ) {
 }

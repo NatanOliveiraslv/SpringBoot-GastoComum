@@ -1,13 +1,14 @@
-package com.br.gasto_comum.service;
+package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.exceptions.ObjectNotFound;
+import com.br.gasto_comum.exceptions.UnauthorizedUser;
+import com.br.gasto_comum.exceptions.UserIsAlreadyInExpense;
 import com.br.gasto_comum.expensesDividedAcconts.*;
-import com.br.gasto_comum.infra.TokenService;
+import com.br.gasto_comum.infra.security.TokenService;
 import com.br.gasto_comum.spending.SpendingRepository;
 import com.br.gasto_comum.users.User;
 import com.br.gasto_comum.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +25,13 @@ public class ExpensesDividedAccontsService {
     @Autowired
     private SpendingRepository spendingRepository;
 
-    public ExpensesDividedAccontsResponseDTO createExpensesDividedAcconts(ExpensesDividedAccontsRequestDTO data) {
+    public ExpensesDividedAccontsResponseDTO createExpensesDividedAcconts(ExpensesDividedAccontsRequestDTO data, User user) {
 
         //Aqui cria um novo objeto de despesas divididas
-        var spending = spendingRepository.getReferenceById(data.spendingId());
-        var user = userRepository.getReferenceById(data.userId());
-        spending.checkIfTheUserIsSpending(user);
+        var spending = spendingRepository.findById(data.spendingId()).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
+        if (spending.checkIfTheUserIsSpending(user)) {
+            throw new UserIsAlreadyInExpense();
+        }
         var expensesDividedAcconts = new ExpensesDividedAcconts(user, spending);
         expensesDividedAccontsRepository.save(expensesDividedAcconts);
 
@@ -51,13 +53,12 @@ public class ExpensesDividedAccontsService {
         return expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
     }
 
-    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(Long id, ExpensesDividedAccontsPayDTO data) {
+    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(Long id, User user) {
 
-        var expensesDividedAcconts = expensesDividedAccontsRepository.getReferenceById(id);
+        var expensesDividedAcconts = expensesDividedAccontsRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Divida não encontrada"));
 
-        var user = userRepository.findById(data.userId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         if (!expensesDividedAcconts.getUser().equals(user)) {
-           ResponseEntity.status(403).build(); // Forbidden
+           throw new UnauthorizedUser(); // Forbidden
         }
 
         expensesDividedAcconts.makePayment();

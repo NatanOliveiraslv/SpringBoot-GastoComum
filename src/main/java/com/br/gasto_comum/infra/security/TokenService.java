@@ -1,4 +1,4 @@
-package com.br.gasto_comum.infra;
+package com.br.gasto_comum.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -1,7 +1,7 @@
 package com.br.gasto_comum.controllers;
 
 import com.br.gasto_comum.expensesDividedAcconts.*;
-import com.br.gasto_comum.service.ExpensesDividedAccontsService;
+import com.br.gasto_comum.services.ExpensesDividedAccontsService;
 import com.br.gasto_comum.users.User;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -22,8 +22,8 @@ public class ExpensesDividedAccontsController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<ExpensesDividedAccontsResponseDTO> createExpensesDividedAcconts(@RequestBody @Valid ExpensesDividedAccontsRequestDTO data, UriComponentsBuilder uriBuilder) {
-        var ExpensesDividedAcconts = expensesDividedAccontsService.createExpensesDividedAcconts(data);
+    public ResponseEntity<ExpensesDividedAccontsResponseDTO> createExpensesDividedAcconts(@RequestBody @Valid ExpensesDividedAccontsRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        var ExpensesDividedAcconts = expensesDividedAccontsService.createExpensesDividedAcconts(data, user);
         var uri  = uriBuilder.path("/expenses-divided-accounts/{id}").buildAndExpand(ExpensesDividedAcconts.id()).toUri();
         return ResponseEntity.created(uri).body(ExpensesDividedAcconts);
     }
@@ -35,7 +35,7 @@ public class ExpensesDividedAccontsController {
 
     @PutMapping("/pay/{id}")
     @Transactional
-    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data) {
-        return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, data));
+    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id,  @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, user));
     }
 }

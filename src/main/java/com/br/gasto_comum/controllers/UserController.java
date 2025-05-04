@@ -1,21 +1,16 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.infra.DataTokenJWT;
-import com.br.gasto_comum.infra.SecurityConfigurations;
-import com.br.gasto_comum.infra.TokenService;
-import com.br.gasto_comum.service.UserService;
+import com.br.gasto_comum.infra.security.DataTokenJWT;
+import com.br.gasto_comum.services.UserService;
 import com.br.gasto_comum.users.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/users")
