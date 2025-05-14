@@ -1,5 +1,6 @@
 package com.br.gasto_comum.spending;
 
+import com.br.gasto_comum.document.Document;
 import com.br.gasto_comum.expensesDividedAcconts.ExpensesDividedAcconts;
 import com.br.gasto_comum.users.User;
 import jakarta.persistence.*;
@@ -23,7 +24,9 @@ public class Spending {
     private Type type;
     private String title;
     private Double value;
-    //private Voucher voucher;
+    @OneToOne
+    @JoinColumn(name = "voucher_id")
+    private Document voucher;
     private String description;
     @ManyToOne
     @JoinColumn(name = "user_id")

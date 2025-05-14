@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -20,9 +22,14 @@ public class SpendingController {
     @Autowired
     private SpendingService spendingService;
 
-    @PostMapping
-    public ResponseEntity<SpendingResponseDTO> createSpending(@RequestBody @Valid SpendingRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
-        var spending = spendingService.createSpending(data, user);
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<SpendingResponseDTO> createSpending(@RequestPart("data") @Valid SpendingRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user,  @RequestPart(value = "voucher", required = false) MultipartFile file) {
+        SpendingResponseDTO spending = null;
+        try {
+            spending = spendingService.createSpending(data, user, file);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         var uri = uriBuilder.path("/spending/{id}").buildAndExpand(spending.id()).toUri();
         return ResponseEntity.created(uri).body(spending);
     }
@@ -32,10 +39,14 @@ public class SpendingController {
         return ResponseEntity.ok(spendingService.listSpending(user));
     }
 
-    @PutMapping
+    @PutMapping(consumes = "multipart/form-data")
     @Transactional
-    public ResponseEntity<SpendingResponseDetailDTO> updateSpending(@RequestBody @Valid SpendingUpdateDTO data, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(spendingService.updateSpending(data,user));
+    public ResponseEntity<SpendingResponseDetailDTO> updateSpending(@RequestPart("data") @Valid SpendingUpdateDTO data, @AuthenticationPrincipal User user, @RequestPart(value = "voucher", required = false) MultipartFile file) {
+        try {
+            return ResponseEntity.ok(spendingService.updateSpending(data,user,file));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/{id}")
