@@ -1,10 +1,9 @@
-package com.br.gasto_comum.spending;
+package com.br.gasto_comum.repositorys;
 
-import com.br.gasto_comum.expensesDividedAcconts.ExpensesDividedAcconts;
-import com.br.gasto_comum.users.User;
+import com.br.gasto_comum.models.Spending;
+import com.br.gasto_comum.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Arrays;
 import java.util.List;
 
 public interface SpendingRepository extends JpaRepository<Spending, Long> {

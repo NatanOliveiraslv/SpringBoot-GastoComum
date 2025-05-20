@@ -1,12 +1,15 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.users.AuthenticationDTO;
+import com.br.gasto_comum.dtos.users.UserRequestDTO;
+import com.br.gasto_comum.dtos.users.UserResponseDTO;
 import com.br.gasto_comum.exceptions.UserAlreadyRegistered;
 import com.br.gasto_comum.infra.security.DataTokenJWT;
 import com.br.gasto_comum.infra.security.SecurityConfigurations;
 import com.br.gasto_comum.infra.security.TokenService;
-import com.br.gasto_comum.users.*;
+import com.br.gasto_comum.models.User;
+import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,7 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.models;
 
 
+import com.br.gasto_comum.dtos.users.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

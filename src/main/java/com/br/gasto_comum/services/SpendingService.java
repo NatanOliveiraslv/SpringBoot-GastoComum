@@ -1,17 +1,21 @@
 package com.br.gasto_comum.services;
 
-import com.br.gasto_comum.document.Document;
-import com.br.gasto_comum.document.DocumentRepository;
+import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
+import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
+import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
+import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.exceptions.ObjectNotFound;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
-import com.br.gasto_comum.spending.*;
-import com.br.gasto_comum.users.User;
-import com.br.gasto_comum.users.UserRepository;
+import com.br.gasto_comum.models.Spending;
+import com.br.gasto_comum.repositorys.SpendingRepository;
+import com.br.gasto_comum.models.User;
+import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -23,41 +27,29 @@ public class SpendingService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private DocumentRepository documentRepository;
+    private DocumentService documentService;
 
-    public SpendingResponseDTO createSpending(SpendingRequestDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException {
+    public SpendingResponseDTO createSpending(SpendingRequestDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = new Spending(data);
         spendingEntity.setUser(user);
         if(file != null) {
-            saveDocument(file, spendingEntity);
+            spendingEntity.setVoucher(documentService.saveDocument(file));
         }
         spendingRepository.save(spendingEntity);
         return new SpendingResponseDTO(spendingEntity);
-    }
-
-    private void saveDocument(MultipartFile file, Spending spending) throws NoSuchAlgorithmException {
-        if (file != null && !file.isEmpty()) {
-            var document = new Document();
-            document.setName(file.getOriginalFilename());
-            document.setMimeType(file.getContentType());
-            document.setSize(file.getSize());
-            document.setHash();
-            spending.setVoucher(document);
-            documentRepository.save(document);
-        }
     }
 
     public List<SpendingResponseDTO> listSpending(User user) {
         return spendingRepository.findByUser(user).stream().map(SpendingResponseDTO::new).toList();
     }
 
-    public SpendingResponseDetailDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException {
+    public SpendingResponseDetailDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = spendingRepository.findById(data.id()).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
         if (!spendingEntity.getUser().equals(user)) {
             throw new UnauthorizedUser(); // Forbidden
         }
         if(file != null) {
-            saveDocument(file, spendingEntity);
+            spendingEntity.setVoucher(documentService.saveDocument(file));
         }
         spendingEntity.update(data);
         return new SpendingResponseDetailDTO(spendingEntity);
@@ -79,6 +71,14 @@ public class SpendingService {
         }
 
         spendingRepository.deleteById(id);
+    }
+
+    public Resource returnVoucher(Long id, User user) {
+        var spendingEntity = spendingRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
+        if (!spendingEntity.getUser().equals(user)) {
+            throw new UnauthorizedUser();  // Forbidden
+        }
+        return documentService.load(spendingEntity.getVoucher().getHash());
     }
 
 }

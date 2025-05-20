@@ -1,6 +1,7 @@
-package com.br.gasto_comum.expensesDividedAcconts;
+package com.br.gasto_comum.repositorys;
 
-import com.br.gasto_comum.users.User;
+import com.br.gasto_comum.models.ExpensesDividedAcconts;
+import com.br.gasto_comum.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

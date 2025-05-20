@@ -1,5 +1,6 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.dtos.users;
 
+import com.br.gasto_comum.models.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 

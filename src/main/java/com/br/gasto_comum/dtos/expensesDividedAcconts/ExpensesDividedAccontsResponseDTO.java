@@ -1,4 +1,7 @@
-package com.br.gasto_comum.expensesDividedAcconts;
+package com.br.gasto_comum.dtos.expensesDividedAcconts;
+
+import com.br.gasto_comum.enums.Status;
+import com.br.gasto_comum.models.ExpensesDividedAcconts;
 
 public record ExpensesDividedAccontsResponseDTO (
         Long id,

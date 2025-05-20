@@ -1,8 +1,10 @@
 package com.br.gasto_comum.controllers;
 
+import com.br.gasto_comum.dtos.users.AuthenticationDTO;
+import com.br.gasto_comum.dtos.users.UserRequestDTO;
+import com.br.gasto_comum.dtos.users.UserResponseDTO;
 import com.br.gasto_comum.infra.security.DataTokenJWT;
 import com.br.gasto_comum.services.UserService;
-import com.br.gasto_comum.users.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,7 @@
-package com.br.gasto_comum.spending;
+package com.br.gasto_comum.dtos.spending;
+
+import com.br.gasto_comum.models.Spending;
+import com.br.gasto_comum.enums.Type;
 
 public record SpendingResponseDTO(
         Long id,

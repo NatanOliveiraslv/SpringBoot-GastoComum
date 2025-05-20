@@ -1,5 +1,6 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.repositorys;
 
+import com.br.gasto_comum.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -1,13 +1,17 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseListDTO;
 import com.br.gasto_comum.exceptions.ObjectNotFound;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
 import com.br.gasto_comum.exceptions.UserIsAlreadyInExpense;
-import com.br.gasto_comum.expensesDividedAcconts.*;
 import com.br.gasto_comum.infra.security.TokenService;
-import com.br.gasto_comum.spending.SpendingRepository;
-import com.br.gasto_comum.users.User;
-import com.br.gasto_comum.users.UserRepository;
+import com.br.gasto_comum.models.ExpensesDividedAcconts;
+import com.br.gasto_comum.repositorys.ExpensesDividedAccontsRepository;
+import com.br.gasto_comum.repositorys.SpendingRepository;
+import com.br.gasto_comum.models.User;
+import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

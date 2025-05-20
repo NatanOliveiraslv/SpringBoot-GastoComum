@@ -1,6 +1,6 @@
 package com.br.gasto_comum.infra.security;
 
-import com.br.gasto_comum.users.UserRepository;
+import com.br.gasto_comum.repositorys.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

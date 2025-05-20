@@ -1,6 +1,7 @@
-package com.br.gasto_comum.expensesDividedAcconts;
+package com.br.gasto_comum.dtos.expensesDividedAcconts;
 
-import com.br.gasto_comum.spending.Type;
+import com.br.gasto_comum.models.ExpensesDividedAcconts;
+import com.br.gasto_comum.enums.Type;
 
 public record ExpensesDividedAccontsResponseListDTO(
         //spending

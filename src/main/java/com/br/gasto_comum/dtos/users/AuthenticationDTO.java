@@ -1,4 +1,4 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.dtos.users;
 
 public record AuthenticationDTO(
         String login,

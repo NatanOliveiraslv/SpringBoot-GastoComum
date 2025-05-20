@@ -1,4 +1,6 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.dtos.users;
+
+import com.br.gasto_comum.models.User;
 
 public record UserResponseDTO(
         Long id,

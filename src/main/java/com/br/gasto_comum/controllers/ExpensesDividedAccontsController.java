@@ -1,8 +1,10 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.expensesDividedAcconts.*;
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseListDTO;
 import com.br.gasto_comum.services.ExpensesDividedAccontsService;
-import com.br.gasto_comum.users.User;
+import com.br.gasto_comum.models.User;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

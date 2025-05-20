@@ -1,8 +1,8 @@
-package com.br.gasto_comum.spending;
+package com.br.gasto_comum.models;
 
-import com.br.gasto_comum.document.Document;
-import com.br.gasto_comum.expensesDividedAcconts.ExpensesDividedAcconts;
-import com.br.gasto_comum.users.User;
+import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
+import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
+import com.br.gasto_comum.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
 

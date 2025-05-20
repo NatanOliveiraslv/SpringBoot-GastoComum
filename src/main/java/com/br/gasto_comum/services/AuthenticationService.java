@@ -1,5 +1,6 @@
-package com.br.gasto_comum.users;
+package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,8 +1,7 @@
-package com.br.gasto_comum.document;
+package com.br.gasto_comum.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.bridge.Message;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

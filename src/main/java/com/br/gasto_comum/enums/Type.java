@@ -1,4 +1,4 @@
-package com.br.gasto_comum.spending;
+package com.br.gasto_comum.enums;
 
 public enum Type {
     CASA,
