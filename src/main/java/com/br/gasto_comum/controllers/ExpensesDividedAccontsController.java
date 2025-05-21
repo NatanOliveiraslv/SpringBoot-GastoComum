@@ -1,5 +1,6 @@
 package com.br.gasto_comum.controllers;
 
+import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsPayDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseListDTO;
@@ -37,7 +38,7 @@ public class ExpensesDividedAccontsController {
 
     @PutMapping("/pay/{id}")
     @Transactional
-    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id,  @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, user));
+    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, data.value(), user));
     }
 }

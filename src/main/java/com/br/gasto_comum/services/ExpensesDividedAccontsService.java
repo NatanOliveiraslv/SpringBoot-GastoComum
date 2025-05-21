@@ -57,7 +57,7 @@ public class ExpensesDividedAccontsService {
         return expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
     }
 
-    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(Long id, User user) {
+    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(Long id, double value, User user) {
 
         var expensesDividedAcconts = expensesDividedAccontsRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Divida não encontrada"));
 
@@ -65,7 +65,7 @@ public class ExpensesDividedAccontsService {
            throw new UnauthorizedUser(); // Forbidden
         }
 
-        expensesDividedAcconts.makePayment();
+        expensesDividedAcconts.makePayment(value);
         return new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts);
     }
 }

@@ -35,8 +35,11 @@ public class ExpensesDividedAcconts {
         this.spending = spending;
     }
 
-    public void makePayment() {
-        this.status = Status.PAID;
+    public void makePayment(double value) {
+        this.value = this.value - value;
+        if(this.value == 0){
+            this.status = Status.PAID;
+        }
         this.date_payment = LocalDateTime.now();
     }
 }
