@@ -1,9 +1,9 @@
 package com.br.gasto_comum.dtos.expensesDividedAcconts;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ExpensesDividedAccontsPayDTO(
-        @NotBlank
+        @NotNull
         double value
 ) {
 }

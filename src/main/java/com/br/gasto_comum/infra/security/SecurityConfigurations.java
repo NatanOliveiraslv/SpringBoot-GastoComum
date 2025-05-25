@@ -34,8 +34,9 @@ public class SecurityConfigurations {
             "/spending/**",
             "/expenses-divided-accounts",
             "/expenses-divided-accounts/spending/**",
-            "/expenses-divided-accounts/pay/**"
-
+            "/expenses-divided-accounts/pay/**",
+            "/group",
+            "/group/add-spending",
     };
 
     @Bean

@@ -34,6 +34,9 @@ public class Spending {
     @OneToMany
     @JoinColumn(name = "spending_id")
     private List<ExpensesDividedAcconts> expensesDividedAcconts;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     private LocalDateTime registration_date;
 

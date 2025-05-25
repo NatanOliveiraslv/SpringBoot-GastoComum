@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record ExpensesDividedAccontsRequestDTO(
         @NotNull
-        Long spendingId
+        Long spendingId,
+        @NotNull
+        Long userId
 ){
 }

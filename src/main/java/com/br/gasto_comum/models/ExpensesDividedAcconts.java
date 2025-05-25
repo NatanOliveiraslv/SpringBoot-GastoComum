@@ -36,6 +36,9 @@ public class ExpensesDividedAcconts {
     }
 
     public void makePayment(double value) {
+        if (this.value < value) {
+            throw new IllegalArgumentException("Payment value exceeds the remaining balance.");
+        }
         this.value = this.value - value;
         if(this.value == 0){
             this.status = Status.PAID;

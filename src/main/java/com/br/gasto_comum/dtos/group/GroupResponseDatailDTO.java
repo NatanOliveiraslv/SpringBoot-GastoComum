@@ -1,0 +1,28 @@
+package com.br.gasto_comum.dtos.group;
+
+import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
+import com.br.gasto_comum.models.Group;
+
+import java.util.List;
+
+public record GroupResponseDatailDTO(
+        Long id,
+        String name,
+        String description,
+        Double totalValue,
+        String userName,
+        List<SpendingResponseDTO> spendings
+) {
+    public GroupResponseDatailDTO(Group group) {
+        this(
+                group.getId(),
+                group.getName(),
+                group.getDescription(),
+                group.getTotal_value(),
+                group.getUser() != null ? group.getUser().getFirstName() : null,
+                group.getSpendings().stream()
+                        .map(SpendingResponseDTO::new)
+                        .toList()
+        );
+    }
+}

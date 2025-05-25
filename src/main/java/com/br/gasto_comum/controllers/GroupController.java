@@ -1,0 +1,43 @@
+package com.br.gasto_comum.controllers;
+
+import com.br.gasto_comum.dtos.group.GroupRequestAddSpendingDTO;
+import com.br.gasto_comum.dtos.group.GroupRequestDTO;
+import com.br.gasto_comum.dtos.group.GroupResponseDTO;
+import com.br.gasto_comum.dtos.group.GroupResponseDatailDTO;
+import com.br.gasto_comum.models.User;
+import com.br.gasto_comum.services.GroupService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/group")
+public class GroupController {
+
+    @Autowired
+    private GroupService groupService;
+
+    @PostMapping
+    public ResponseEntity<GroupResponseDatailDTO> createGroup(@RequestBody GroupRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        GroupResponseDatailDTO groupEntity = groupService.createGroup(data, user);
+        var uri = uriBuilder.path("/group/{id}").buildAndExpand(groupEntity.id()).toUri();
+        return ResponseEntity.created(uri).body(groupEntity);
+    }
+
+    // Endpoint para adicionar gastos a um grupo
+    @PostMapping("/add-spending")
+    public ResponseEntity<GroupResponseDatailDTO> addSpendingToGroup(@RequestBody GroupRequestAddSpendingDTO data, @AuthenticationPrincipal User user) {
+        GroupResponseDatailDTO response = groupService.addSpendingToGroup(data, user);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GroupResponseDTO>> getAllGroups(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(groupService.listGroup(user));
+    }
+}

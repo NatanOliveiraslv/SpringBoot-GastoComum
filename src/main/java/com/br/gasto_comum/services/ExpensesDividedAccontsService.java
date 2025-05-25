@@ -36,7 +36,8 @@ public class ExpensesDividedAccontsService {
         if (spending.checkIfTheUserIsSpending(user)) {
             throw new UserIsAlreadyInExpense();
         }
-        var expensesDividedAcconts = new ExpensesDividedAcconts(user, spending);
+        var dataUser = userRepository.findById(data.userId()).orElseThrow(() -> new ObjectNotFound("Usuário não encontrado"));
+        var expensesDividedAcconts = new ExpensesDividedAcconts(dataUser, spending);
         expensesDividedAccontsRepository.save(expensesDividedAcconts);
 
         //Aqui adiciona o objeto de despesas divididas na lista de despesas do objeto de despesas

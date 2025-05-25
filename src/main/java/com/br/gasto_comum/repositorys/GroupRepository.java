@@ -1,0 +1,11 @@
+package com.br.gasto_comum.repositorys;
+
+import com.br.gasto_comum.models.Group;
+import com.br.gasto_comum.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface GroupRepository extends JpaRepository<Group, Long> {
+    List<Group> findByUser(User user);
+}
