@@ -1,11 +1,7 @@
 package com.br.gasto_comum.infra;
 
-import com.br.gasto_comum.exceptions.ObjectNotFound;
-import com.br.gasto_comum.exceptions.UnauthorizedUser;
-import com.br.gasto_comum.exceptions.UserAlreadyRegistered;
-import com.br.gasto_comum.exceptions.UserIsAlreadyInExpense;
+import com.br.gasto_comum.exceptions.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +12,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserIsAlreadyInExpense.class)
     private ResponseEntity<RestErrorMessage> userIsAlreadyInExpense(UserIsAlreadyInExpense exception) {
+        RestErrorMessage threadErrorMessage = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threadErrorMessage);
+    }
+
+    @ExceptionHandler(SpendingIsAlreadyInGroup.class)
+    private ResponseEntity<RestErrorMessage> spendingIsAlreadyInGroup(SpendingIsAlreadyInGroup exception) {
         RestErrorMessage threadErrorMessage = new RestErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threadErrorMessage);
     }

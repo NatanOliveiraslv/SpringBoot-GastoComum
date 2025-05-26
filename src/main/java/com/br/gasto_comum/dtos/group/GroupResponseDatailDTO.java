@@ -18,8 +18,8 @@ public record GroupResponseDatailDTO(
                 group.getId(),
                 group.getName(),
                 group.getDescription(),
-                group.getTotal_value(),
-                group.getUser() != null ? group.getUser().getFirstName() : null,
+                group.getTotal_value() != null ? group.getTotal_value() : 0.0,
+                group.getUser().getUsername(),
                 group.getSpendings().stream()
                         .map(SpendingResponseDTO::new)
                         .toList()

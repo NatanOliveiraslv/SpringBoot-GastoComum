@@ -1,6 +1,7 @@
 package com.br.gasto_comum.models;
 
 import com.br.gasto_comum.dtos.group.GroupRequestDTO;
+import com.br.gasto_comum.exceptions.SpendingIsAlreadyInGroup;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,12 +32,24 @@ public class Group {
     public Group(GroupRequestDTO data) {
         this.name = data.name();
         this.description = data.description();
+        this.total_value = 0.0;
+    }
+
+    public boolean checkIfTheSpendingIsGroup(Spending spending) {
+        for (Spending e : this.spendings) {
+            if (e.getId().equals(spending.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addSpending(Spending spending) {
+        if(checkIfTheSpendingIsGroup(spending)) {
+            throw new SpendingIsAlreadyInGroup("Gasto já está na lista do grupo. ID: " + spending.getId());
+        }
         this.spendings.add(spending);
         this.total_value += spending.getValue();
     }
-
 
 }

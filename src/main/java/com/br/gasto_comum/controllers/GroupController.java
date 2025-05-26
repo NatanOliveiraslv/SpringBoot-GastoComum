@@ -4,8 +4,10 @@ import com.br.gasto_comum.dtos.group.GroupRequestAddSpendingDTO;
 import com.br.gasto_comum.dtos.group.GroupRequestDTO;
 import com.br.gasto_comum.dtos.group.GroupResponseDTO;
 import com.br.gasto_comum.dtos.group.GroupResponseDatailDTO;
+import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.services.GroupService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +25,15 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<GroupResponseDatailDTO> createGroup(@RequestBody GroupRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
-        GroupResponseDatailDTO groupEntity = groupService.createGroup(data, user);
+    public ResponseEntity<GroupResponseDTO> createGroup(@RequestBody GroupRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+        GroupResponseDTO groupEntity = groupService.createGroup(data, user);
         var uri = uriBuilder.path("/group/{id}").buildAndExpand(groupEntity.id()).toUri();
         return ResponseEntity.created(uri).body(groupEntity);
     }
 
     // Endpoint para adicionar gastos a um grupo
-    @PostMapping("/add-spending")
+    @PostMapping("/add/spending")
+    @Transactional
     public ResponseEntity<GroupResponseDatailDTO> addSpendingToGroup(@RequestBody GroupRequestAddSpendingDTO data, @AuthenticationPrincipal User user) {
         GroupResponseDatailDTO response = groupService.addSpendingToGroup(data, user);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -40,4 +43,11 @@ public class GroupController {
     public ResponseEntity<List<GroupResponseDTO>> getAllGroups(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(groupService.listGroup(user));
     }
+
+    @GetMapping("/{id}")
+    @Transactional
+    public ResponseEntity<GroupResponseDatailDTO> detailGroup(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(groupService.detailGroup(id, user));
+    }
+
 }
