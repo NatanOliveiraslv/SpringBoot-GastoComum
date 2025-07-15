@@ -1,10 +1,14 @@
 package com.br.gasto_comum.enums;
 
 public enum Type {
+    COMIDA,
+    TRANSPPORTE,
+    UTILITARIAS,
     CASA,
-    MERCADO,
-    EMPRESTIMO,
-    RESTAURANTE,
-    ALUGUEL,
+    ENTRETEDIMENTO,
+    SAUDE,
+    SHOPPING,
+    EDUCACAO,
+    VIAGEM,
     OUTROS;
 }

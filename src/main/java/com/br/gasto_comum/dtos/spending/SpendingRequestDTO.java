@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record SpendingRequestDTO(
 
+        @NotNull
         @Enumerated
         Type type,
         @NotBlank

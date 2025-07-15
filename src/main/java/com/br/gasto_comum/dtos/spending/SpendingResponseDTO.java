@@ -8,7 +8,8 @@ public record SpendingResponseDTO(
         Type type,
         String title,
         Double value,
-        String description
+        String description,
+        int totalParticipants
 ) {
     public SpendingResponseDTO(Spending spendingEntity) {
         this(
@@ -16,8 +17,8 @@ public record SpendingResponseDTO(
                 spendingEntity.getType(),
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
-                spendingEntity.getDescription()
-
+                spendingEntity.getDescription(),
+                spendingEntity.getExpensesDividedAcconts() == null ? 0 : spendingEntity.getExpensesDividedAcconts().size()
         );
     }
 }

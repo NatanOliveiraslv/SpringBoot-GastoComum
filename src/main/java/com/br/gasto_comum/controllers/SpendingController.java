@@ -6,16 +6,19 @@ import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.services.SpendingService;
 import com.br.gasto_comum.models.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -29,16 +32,22 @@ public class SpendingController {
     private SpendingService spendingService;
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<SpendingResponseDTO> createSpending(@RequestPart("data") @Valid SpendingRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user, @RequestPart(value = "voucher", required = false) MultipartFile file) {
+    public ResponseEntity<SpendingResponseDTO> createSpending(
+            @RequestPart("data") @Valid SpendingRequestDTO spendingData,
+            @RequestPart(value = "voucher", required = false) MultipartFile file,
+            UriComponentsBuilder uriBuilder,
+            @AuthenticationPrincipal User user
+    )  {
         SpendingResponseDTO spending = null;
         try {
-            spending = spendingService.createSpending(data, user, file);
+            spending = spendingService.createSpending(spendingData, user, file);
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
         var uri = uriBuilder.path("/spending/{id}").buildAndExpand(spending.id()).toUri();
         return ResponseEntity.created(uri).body(spending);
     }
+
 
     @GetMapping
     public ResponseEntity<List<SpendingResponseDTO>> listSpending(@AuthenticationPrincipal User user) {
