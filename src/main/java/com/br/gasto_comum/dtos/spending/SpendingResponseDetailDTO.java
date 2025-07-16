@@ -8,7 +8,7 @@ import java.util.List;
 
 public record SpendingResponseDetailDTO(
         Long id,
-        Type type,
+        String type,
         String title,
         Double value,
         String description,
@@ -21,7 +21,7 @@ public record SpendingResponseDetailDTO(
     public SpendingResponseDetailDTO(Spending spending) {
         this(
                 spending.getId(),
-                spending.getType(),
+                spending.getType().getNameType(),
                 spending.getTitle(),
                 spending.getValue(),
                 spending.getDescription(),

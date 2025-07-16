@@ -5,7 +5,7 @@ import com.br.gasto_comum.enums.Type;
 
 public record SpendingResponseDTO(
         Long id,
-        Type type,
+        String type,
         String title,
         Double value,
         String description,
@@ -14,7 +14,7 @@ public record SpendingResponseDTO(
     public SpendingResponseDTO(Spending spendingEntity) {
         this(
                 spendingEntity.getId(),
-                spendingEntity.getType(),
+                spendingEntity.getType().getNameType(),
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
