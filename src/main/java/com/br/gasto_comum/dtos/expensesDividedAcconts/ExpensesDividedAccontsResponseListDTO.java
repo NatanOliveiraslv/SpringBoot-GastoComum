@@ -21,7 +21,7 @@ public record ExpensesDividedAccontsResponseListDTO(
                 expensesDividedAcconts.getSpending().getType(),
                 expensesDividedAcconts.getSpending().getTitle(),
                 expensesDividedAcconts.getSpending().getValue(),
-                expensesDividedAcconts.getSpending().getUser().getLogin(),
+                expensesDividedAcconts.getSpending().getUser().getUsername(),
                 expensesDividedAcconts.getId(),
                 expensesDividedAcconts.getStatus().toString(),
                 expensesDividedAcconts.getValue()

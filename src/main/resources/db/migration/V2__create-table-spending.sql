@@ -3,7 +3,7 @@ CREATE TABLE spending (
       type VARCHAR(255),
       value DOUBLE,
       description VARCHAR(255),
-      user_id BIGINT,
+      user_id CHAR(36),
       registration_date DATETIME,
-      FOREIGN KEY (user_id) REFERENCES user(id)
+      FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -1,5 +1,6 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +15,15 @@ public class AuthenticationService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByLogin(username);
-    }
+    public UserDetails loadUserByUsername(final String username)
+            throws UsernameNotFoundException {
 
+        return userRepository.findByUsername(username).map(user ->
+                User.builder()
+                        .username(username)
+                        .password(user.getPassword())
+                        .build()
+        ).orElseThrow(() -> new UsernameNotFoundException(
+                "User with username [%s] not found".formatted(username)));
+    }
 }

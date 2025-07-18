@@ -1,6 +1,6 @@
 package com.br.gasto_comum.dtos.users;
 
-public record AuthenticationDTO(
+public record AuthenticationRequestDTO(
         String login,
         String password
 ) {

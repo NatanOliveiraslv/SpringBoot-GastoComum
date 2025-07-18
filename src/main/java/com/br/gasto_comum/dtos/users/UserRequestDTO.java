@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record UserRequestDTO(
 
         @NotBlank
-        String login,
+        String userName,
         @NotBlank
         String password,
         @NotBlank
@@ -20,7 +20,7 @@ public record UserRequestDTO(
 ) {
         public UserRequestDTO(User user) {
                 this(
-                        user.getLogin(),
+                        user.getUsername(),
                         user.getPassword(),
                         user.getFirstName(),
                         user.getLastName(),

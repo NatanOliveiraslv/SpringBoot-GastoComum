@@ -33,7 +33,9 @@ public class SecurityConfigurations {
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/auth/sign-in",
             "/auth",
-            "/error"
+            "/error",
+            "/auth/logout",
+            "/auth/refresh-token"
     };
 
     // Endpoints que requerem autenticação para serem acessados

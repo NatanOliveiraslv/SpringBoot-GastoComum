@@ -2,8 +2,10 @@ package com.br.gasto_comum.dtos.users;
 
 import com.br.gasto_comum.models.User;
 
+import java.util.UUID;
+
 public record UserResponseDTO(
-        Long id,
+        UUID id,
         String login,
         String firstName,
         String lastName,
@@ -12,7 +14,7 @@ public record UserResponseDTO(
     public UserResponseDTO(User userEntity) {
         this(
                 userEntity.getId(),
-                userEntity.getLogin(),
+                userEntity.getUsername(),
                 userEntity.getFirstName(),
                 userEntity.getLastName(),
                 userEntity.getEmail()

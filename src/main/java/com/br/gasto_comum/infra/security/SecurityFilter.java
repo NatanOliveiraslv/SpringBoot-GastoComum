@@ -31,8 +31,8 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (token != null) {
                 try {
                     String subject = tokenService.getSubject(token); // Obtém o assunto (neste caso, o nome de usuário) do token
-                    var user = userRepository.findByLogin(subject); // Busca o usuário pelo login (que é o assunto do token)
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    var user = userRepository.findByUsername(subject); // Busca o usuário pelo login (que é o assunto do token)
+                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.get().getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }catch (Exception e){
                     logger.warn("Falha na autenticação: " + e.getMessage());

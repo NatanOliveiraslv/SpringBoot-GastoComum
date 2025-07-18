@@ -2,9 +2,9 @@ CREATE TABLE groupspending(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     description VARCHAR(255),
-    user_id BIGINT,
+    user_id CHAR(36),
     total_value DOUBLE,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 ALTER TABLE spending ADD group_id BIGINT;

@@ -13,7 +13,7 @@ public record ExpensesDividedAccontsResponseDTO (
     public ExpensesDividedAccontsResponseDTO(ExpensesDividedAcconts expensesDividedAcconts) {
         this(
                 expensesDividedAcconts.getId(),
-                expensesDividedAcconts.getUser().getLogin(),
+                expensesDividedAcconts.getUser().getUsername(),
                 expensesDividedAcconts.getStatus(),
                 expensesDividedAcconts.getValue(),
                 expensesDividedAcconts.getSpending().getTitle()
