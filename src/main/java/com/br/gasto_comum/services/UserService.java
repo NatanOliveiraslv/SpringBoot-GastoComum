@@ -64,14 +64,14 @@ public class UserService {
     public AuthenticationResponseDTO authenticate(final AuthenticationRequestDTO data) {
 
         // Authenticate the user
-        var token = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var token = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var authentication = authenticationManager.authenticate(token);
 
         // Generate JWT access token
         String accessToken = tokenService.generateToken((User) authentication.getPrincipal());
 
         // Fetch user and create refresh token
-        User user = userRepository.findByUsername(data.login()).orElseThrow(() -> new UnauthorizedUser("Usário não autorizado"));
+        User user = userRepository.findByUsername(data.username()).orElseThrow(() -> new UnauthorizedUser("Usário não autorizado"));
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
