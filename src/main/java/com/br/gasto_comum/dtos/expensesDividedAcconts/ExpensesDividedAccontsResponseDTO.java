@@ -5,7 +5,7 @@ import com.br.gasto_comum.models.ExpensesDividedAcconts;
 
 public record ExpensesDividedAccontsResponseDTO (
         Long id,
-        String userLogin,
+        String firstName,
         Status status,
         Double value,
         String spendingTitle
@@ -13,7 +13,7 @@ public record ExpensesDividedAccontsResponseDTO (
     public ExpensesDividedAccontsResponseDTO(ExpensesDividedAcconts expensesDividedAcconts) {
         this(
                 expensesDividedAcconts.getId(),
-                expensesDividedAcconts.getUser().getUsername(),
+                expensesDividedAcconts.getUser().getFirstName(),
                 expensesDividedAcconts.getStatus(),
                 expensesDividedAcconts.getValue(),
                 expensesDividedAcconts.getSpending().getTitle()

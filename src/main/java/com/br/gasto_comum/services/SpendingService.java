@@ -32,6 +32,7 @@ public class SpendingService {
     public SpendingResponseDTO createSpending(SpendingRequestDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = new Spending(data);
         spendingEntity.setUser(user);
+        System.out.println(user.getUsername());
         if(file != null) {
             spendingEntity.setVoucher(documentService.saveDocument(file));
         }
