@@ -4,17 +4,19 @@ import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResp
 import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.enums.Type;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public record SpendingResponseDetailDTO(
-        Long id,
+        UUID id,
         String type,
         String title,
         Double value,
         String description,
         String userName,
         String userEmail,
-        String registrationDate,
+        LocalDate dateSpending,
         List<ExpensesDividedAccontsResponseDTO> expensesDividedAcconts
 
 ) {
@@ -27,7 +29,7 @@ public record SpendingResponseDetailDTO(
                 spending.getDescription(),
                 spending.getUser().getFirstName(),
                 spending.getUser().getEmail(),
-                spending.getRegistration_date().toString(),
+                spending.getDateSpending(),
                 spending.getExpensesDividedAcconts().stream()
                         .map(ExpensesDividedAccontsResponseDTO::new)
                         .toList()

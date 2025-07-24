@@ -3,15 +3,17 @@ package com.br.gasto_comum.dtos.expensesDividedAcconts;
 import com.br.gasto_comum.models.ExpensesDividedAcconts;
 import com.br.gasto_comum.enums.Type;
 
+import java.util.UUID;
+
 public record ExpensesDividedAccontsResponseListDTO(
         //spending
-        Long spendingId,
+        UUID spendingId,
         Type spendingType,
         String spendingTitle,
         Double spendingValue,
         String spendingUserLogin,
         //expensesDividedAcconts
-        Long expensesDividedAccontsId,
+        UUID expensesDividedAccontsId,
         String expensesDividedAccontsStatus,
         Double expensesDividedAccontsValue
 ) {

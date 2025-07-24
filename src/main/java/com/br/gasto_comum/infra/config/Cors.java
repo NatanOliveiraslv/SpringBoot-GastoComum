@@ -1,4 +1,4 @@
-package com.br.gasto_comum.config;
+package com.br.gasto_comum.infra.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

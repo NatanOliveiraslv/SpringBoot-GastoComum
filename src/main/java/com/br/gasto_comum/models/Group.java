@@ -4,8 +4,13 @@ import com.br.gasto_comum.dtos.group.GroupRequestDTO;
 import com.br.gasto_comum.exceptions.SpendingIsAlreadyInGroup;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "Group")
 @Table(name = "groupspending")
@@ -14,20 +19,37 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false, unique = true)
+    private UUID id;
+
+    @Column(nullable = false)
     private String name;
+
     private String description;
+
+    @Column(nullable = false)
+    private Double total_value;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToMany
     @JoinColumn(name = "group_id")
     private List<Spending> spendings;
-    private Double total_value;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private Instant updatedAt;
 
     public Group(GroupRequestDTO data) {
         this.name = data.name();

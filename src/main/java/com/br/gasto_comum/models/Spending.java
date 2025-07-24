@@ -5,9 +5,15 @@ import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.enums.Type;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "Spending")
 @Table(name = "spending")
@@ -16,37 +22,57 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class Spending {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false, unique = true)
+    private UUID id;
+
     @Enumerated(EnumType.STRING)
     private Type type;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private Double value;
+
     @OneToOne
     @JoinColumn(name = "voucher_id")
     private Document voucher;
     private String description;
+
+    @Column(name = "date_spending")
+    private LocalDate dateSpending;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToMany
     @JoinColumn(name = "spending_id")
     private List<ExpensesDividedAcconts> expensesDividedAcconts;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
 
-    private LocalDateTime registration_date;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt;
 
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private Instant updatedAt;
 
     public Spending(SpendingRequestDTO data) {
         this.title = data.title();
         this.type = data.type();
         this.value = data.value();
         this.description = data.description();
-        this.registration_date = LocalDateTime.now();
+        this.dateSpending = data.dateSpending();
     }
 
     public void update(SpendingUpdateDTO data) {

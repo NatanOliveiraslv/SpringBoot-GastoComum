@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record ExpensesDividedAccontsRequestDTO(
         @NotNull
-        Long spendingId,
+        UUID spendingId,
         @NotNull
         UUID userId
 ){

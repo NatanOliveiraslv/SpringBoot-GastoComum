@@ -32,7 +32,7 @@ public class SecurityConfigurations {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/auth/sign-in",
-            "/auth",
+            "/auth/register",
             "/error",
             "/auth/logout",
             "/auth/refresh-token"

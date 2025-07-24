@@ -4,9 +4,10 @@ import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.models.Group;
 
 import java.util.List;
+import java.util.UUID;
 
 public record GroupResponseDatailDTO(
-        Long id,
+        UUID id,
         String name,
         String description,
         Double totalValue,

@@ -1,5 +1,6 @@
 package com.br.gasto_comum.controllers;
 
+import com.br.gasto_comum.dtos.Document.DocumentResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/spending")
@@ -66,22 +68,20 @@ public class SpendingController {
 
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<SpendingResponseDetailDTO> detailSpending(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<SpendingResponseDetailDTO> detailSpending(@PathVariable UUID id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(spendingService.detailSpending(id, user));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteSpending(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> deleteSpending(@PathVariable UUID id, @AuthenticationPrincipal User user) {
         spendingService.deleteSpending(id, user);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/voucher")
     @ResponseBody
-    public ResponseEntity<Resource> returnVoucher(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        Resource file = spendingService.returnVoucher(id, user);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    public ResponseEntity<DocumentResponseDTO> returnVoucher(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(spendingService.returnVoucher(id, user));
     }
 }

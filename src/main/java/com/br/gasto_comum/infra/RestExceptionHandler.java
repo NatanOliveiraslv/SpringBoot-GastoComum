@@ -46,4 +46,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threadErrorMessage);
     }
 
+    @ExceptionHandler(FileIsTooLarge.class)
+    private ResponseEntity<RestErrorMessage> objectNotFound(FileIsTooLarge exception) {
+        RestErrorMessage threadErrorMessage = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(threadErrorMessage);
+    }
+
 }

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExpensesDividedAccontsService {
@@ -58,7 +59,7 @@ public class ExpensesDividedAccontsService {
         return expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
     }
 
-    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(Long id, double value, User user) {
+    public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(UUID id, double value, User user) {
 
         var expensesDividedAcconts = expensesDividedAccontsRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Divida não encontrada"));
 

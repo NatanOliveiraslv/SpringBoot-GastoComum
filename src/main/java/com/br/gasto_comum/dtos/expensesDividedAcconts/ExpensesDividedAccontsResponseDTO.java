@@ -3,8 +3,10 @@ package com.br.gasto_comum.dtos.expensesDividedAcconts;
 import com.br.gasto_comum.enums.Status;
 import com.br.gasto_comum.models.ExpensesDividedAcconts;
 
+import java.util.UUID;
+
 public record ExpensesDividedAccontsResponseDTO (
-        Long id,
+        UUID id,
         String firstName,
         Status status,
         Double value,

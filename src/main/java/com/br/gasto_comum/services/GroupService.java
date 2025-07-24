@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GroupService {
@@ -52,7 +53,7 @@ public class GroupService {
         return groupRepository.findByUser(user).stream().map(GroupResponseDTO::new).toList();
     }
 
-    public GroupResponseDatailDTO detailGroup(Long id, User user) {
+    public GroupResponseDatailDTO detailGroup(UUID id, User user) {
         var groupEntity = groupRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Grupo não encontrado"));
         if (!groupEntity.getUser().equals(user)) {
             throw new UnauthorizedUser();  // Forbidden

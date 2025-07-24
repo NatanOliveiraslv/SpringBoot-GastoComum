@@ -6,7 +6,7 @@ CREATE TABLE users (
    first_name varchar(100) not null,
    last_name varchar(100) not null,
    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_users_username ON users(username);

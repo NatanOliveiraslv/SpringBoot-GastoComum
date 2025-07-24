@@ -1,5 +1,6 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.Document.DocumentResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
@@ -15,9 +16,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SpendingService {
@@ -56,7 +59,7 @@ public class SpendingService {
         return new SpendingResponseDetailDTO(spendingEntity);
     }
 
-    public SpendingResponseDetailDTO detailSpending(Long id, User user) {
+    public SpendingResponseDetailDTO detailSpending(UUID id, User user) {
         var spendingEntity = spendingRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
         if (!spendingEntity.getUser().equals(user)) {
             throw new UnauthorizedUser();  // Forbidden
@@ -64,7 +67,7 @@ public class SpendingService {
         return new SpendingResponseDetailDTO(spendingEntity);
     }
 
-    public void deleteSpending(Long id, User user) {
+    public void deleteSpending(UUID id, User user) {
         var spendingEntity = spendingRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
 
         if (!spendingEntity.getUser().equals(user)) {
@@ -74,12 +77,15 @@ public class SpendingService {
         spendingRepository.deleteById(id);
     }
 
-    public Resource returnVoucher(Long id, User user) {
+    public DocumentResponseDTO returnVoucher(UUID id, User user) {
         var spendingEntity = spendingRepository.findById(id).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
         if (!spendingEntity.getUser().equals(user)) {
             throw new UnauthorizedUser();  // Forbidden
         }
-        return documentService.load(spendingEntity.getVoucher().getHash());
+
+        DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO(documentService.load(spendingEntity.getVoucher().getHash()));
+
+        return documentResponseDTO;
     }
 
 }

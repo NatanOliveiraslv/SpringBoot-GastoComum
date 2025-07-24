@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/expenses-divided-accounts")
@@ -38,7 +39,7 @@ public class ExpensesDividedAccontsController {
 
     @PutMapping("/pay/{id}")
     @Transactional
-    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable Long id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ExpensesDividedAccontsResponseDTO> payExpensesDividedAcconts(@PathVariable UUID id, @RequestBody @Valid ExpensesDividedAccontsPayDTO data, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(expensesDividedAccontsService.payExpensesDividedAcconts(id, data.value(), user));
     }
 }

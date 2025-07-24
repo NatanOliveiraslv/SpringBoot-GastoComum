@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/group")
@@ -46,7 +47,7 @@ public class GroupController {
 
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<GroupResponseDatailDTO> detailGroup(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<GroupResponseDatailDTO> detailGroup(@PathVariable UUID id, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(groupService.detailGroup(id, user));
     }
 

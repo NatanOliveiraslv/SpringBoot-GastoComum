@@ -1,5 +1,7 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.Document.DocumentResponseDTO;
+import com.br.gasto_comum.exceptions.FileIsTooLarge;
 import com.br.gasto_comum.models.Document;
 import com.br.gasto_comum.repositorys.DocumentRepository;
 import com.br.gasto_comum.property.DocumentStorageProperty;
@@ -8,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,6 +36,9 @@ public class DocumentService {
 
     public Document saveDocument(MultipartFile file) throws NoSuchAlgorithmException, IOException {
         if (file != null && !file.isEmpty()) {
+            if (file.getSize() > 1_000_000) { // 1 MB limit
+                throw new FileIsTooLarge();
+            }
             var document = new Document();
             document.setName(file.getOriginalFilename());
             document.setMimeType(file.getContentType());
@@ -50,13 +56,18 @@ public class DocumentService {
         Files.copy(file.getInputStream(), targetLocation);
     }
 
-    public Resource load(String hash) {
+    public String load(String hash) {
         try {
             Path file = docStorageLocation.resolve(hash);
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                return resource;
+                String fileDownloadLink = ServletUriComponentsBuilder.
+                        fromCurrentContextPath()
+                        .path("/files/download/")
+                        .path(hash).
+                        toString();
+                return fileDownloadLink;
             } else {
                 throw new RuntimeException("Could not read the file!");
             }

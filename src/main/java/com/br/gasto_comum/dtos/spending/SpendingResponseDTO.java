@@ -3,8 +3,10 @@ package com.br.gasto_comum.dtos.spending;
 import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.enums.Type;
 
+import java.util.UUID;
+
 public record SpendingResponseDTO(
-        Long id,
+        UUID id,
         String type,
         String title,
         Double value,
