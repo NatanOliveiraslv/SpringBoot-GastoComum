@@ -1,13 +1,12 @@
 package com.br.gasto_comum.controllers;
 
-import com.br.gasto_comum.dtos.Document.DocumentResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.services.SpendingService;
 import com.br.gasto_comum.models.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -79,9 +77,25 @@ public class SpendingController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/voucher")
+    @GetMapping("/files/download/{hash:.+}")
     @ResponseBody
-    public ResponseEntity<DocumentResponseDTO> returnVoucher(@PathVariable UUID id, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(spendingService.returnVoucher(id, user));
+    public ResponseEntity<Resource> downloadFile(@PathVariable String hash, HttpServletRequest request) {
+        Resource resource = spendingService.downloadFile(hash);
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            System.out.println("Não foi possível determinar o tipo de arquivo." + ex.getMessage());
+        }
+
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        // Retorna o ResponseEntity com o recurso e os cabeçalhos apropriados
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"") // Força o download com o nome original
+                .body(resource);
     }
 }

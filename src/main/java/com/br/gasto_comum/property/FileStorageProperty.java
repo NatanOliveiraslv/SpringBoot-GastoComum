@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "document")
+@ConfigurationProperties(prefix = "file-storage")
 @Getter
 @Setter
-public class DocumentStorageProperty {
+public class FileStorageProperty {
 
     private String uploadDirectory;
 

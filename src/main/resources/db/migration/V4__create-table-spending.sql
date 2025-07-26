@@ -12,7 +12,7 @@ CREATE TABLE spending (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (voucher_id) REFERENCES document(id),
+    FOREIGN KEY (voucher_id) REFERENCES files(id),
     CONSTRAINT fk_spending_groupspending FOREIGN KEY (group_id) REFERENCES groupspending(id)
 );
 

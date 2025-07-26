@@ -1,8 +1,8 @@
 package com.br.gasto_comum.dtos.spending;
 
+import com.br.gasto_comum.dtos.File.FileResponseDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
 import com.br.gasto_comum.models.Spending;
-import com.br.gasto_comum.enums.Type;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,10 +17,11 @@ public record SpendingResponseDetailDTO(
         String userName,
         String userEmail,
         LocalDate dateSpending,
-        List<ExpensesDividedAccontsResponseDTO> expensesDividedAcconts
+        List<ExpensesDividedAccontsResponseDTO> expensesDividedAcconts,
+        FileResponseDTO voucher
 
 ) {
-    public SpendingResponseDetailDTO(Spending spending) {
+    public SpendingResponseDetailDTO(Spending spending, String fileDownloadUri) {
         this(
                 spending.getId(),
                 spending.getType().getNameType(),
@@ -32,7 +33,8 @@ public record SpendingResponseDetailDTO(
                 spending.getDateSpending(),
                 spending.getExpensesDividedAcconts().stream()
                         .map(ExpensesDividedAccontsResponseDTO::new)
-                        .toList()
+                        .toList(),
+                spending.getVoucher() != null ? new FileResponseDTO(spending.getVoucher(), fileDownloadUri) : null
         );
     }
 }

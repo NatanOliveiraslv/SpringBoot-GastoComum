@@ -41,7 +41,7 @@ public class Spending {
 
     @OneToOne
     @JoinColumn(name = "voucher_id")
-    private Document voucher;
+    private File voucher;
     private String description;
 
     @Column(name = "date_spending")
