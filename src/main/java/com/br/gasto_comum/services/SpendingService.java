@@ -12,6 +12,8 @@ import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,8 @@ public class SpendingService {
     private UserRepository userRepository;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
 
     public SpendingResponseDTO createSpending(SpendingRequestDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = new Spending(data);
@@ -41,8 +45,8 @@ public class SpendingService {
         return new SpendingResponseDTO(spendingEntity);
     }
 
-    public List<SpendingResponseDTO> listSpending(User user) {
-        return spendingRepository.findByUser(user).stream().map(SpendingResponseDTO::new).toList();
+    public Page<SpendingResponseDTO> listSpending(User user, Pageable pageable) {
+        return spendingRepository.findByUser(user, pageable).map(SpendingResponseDTO::new);
     }
 
     public SpendingResponseDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
@@ -77,7 +81,7 @@ public class SpendingService {
 
 
     public Resource downloadFile(String hash) {
-        return documentService.loadFileAsResource(hash);
+        return fileSystemStorageService.loadFileAsResource(hash);
     }
 
 }

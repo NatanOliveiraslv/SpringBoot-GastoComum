@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-@ConfigurationProperties(prefix = "file-storage")
+@ConfigurationProperties(prefix = "file")
 @Getter
 @Setter
 public class FileStorageProperty {

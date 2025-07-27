@@ -36,7 +36,7 @@ public class SecurityConfigurations {
             "/error",
             "/auth/logout",
             "/auth/refresh-token",
-            "/spending/files/download/**",
+            "/spending/voucher/download/**",
     };
 
     // Endpoints que requerem autenticação para serem acessados

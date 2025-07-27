@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,13 +53,13 @@ public class SpendingController {
 
 
     @GetMapping
-    public ResponseEntity<List<SpendingResponseDTO>> listSpending(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(spendingService.listSpending(user));
+    public ResponseEntity<Page<SpendingResponseDTO>> listSpending(@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(spendingService.listSpending(user, pageable));
     }
 
     @PutMapping(consumes = "multipart/form-data")
     @Transactional
-    public ResponseEntity<SpendingResponseDetailDTO> updateSpending(@RequestPart("data") @Valid SpendingUpdateDTO data, @AuthenticationPrincipal User user, @RequestPart(value = "voucher", required = false) MultipartFile file) {
+    public ResponseEntity<SpendingResponseDTO> updateSpending(@RequestPart("data") @Valid SpendingUpdateDTO data, @AuthenticationPrincipal User user, @RequestPart(value = "voucher", required = false) MultipartFile file) {
         try {
             return ResponseEntity.ok(spendingService.updateSpending(data,user,file));
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -77,10 +80,10 @@ public class SpendingController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/files/download/{hash:.+}")
+    @GetMapping("/voucher/download/{fileName:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> downloadFile(@PathVariable String hash, HttpServletRequest request) {
-        Resource resource = spendingService.downloadFile(hash);
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        Resource resource = spendingService.downloadFile(fileName);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -95,7 +98,7 @@ public class SpendingController {
         // Retorna o ResponseEntity com o recurso e os cabeçalhos apropriados
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"") // Força o download com o nome original
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"") // Força o download com o nome original
                 .body(resource);
     }
 }

@@ -4,7 +4,7 @@ CREATE TABLE files (
     file_system VARCHAR(255) NOT NULL UNIQUE,
     mime_type VARCHAR(255),
     size BIGINT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_files_filesystem ON files(file_system);

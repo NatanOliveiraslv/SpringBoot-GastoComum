@@ -21,7 +21,7 @@ public record SpendingResponseDetailDTO(
         FileResponseDTO voucher
 
 ) {
-    public SpendingResponseDetailDTO(Spending spending, String fileDownloadUri) {
+    public SpendingResponseDetailDTO(Spending spending) {
         this(
                 spending.getId(),
                 spending.getType().getNameType(),
@@ -34,7 +34,7 @@ public record SpendingResponseDetailDTO(
                 spending.getExpensesDividedAcconts().stream()
                         .map(ExpensesDividedAccontsResponseDTO::new)
                         .toList(),
-                spending.getVoucher() != null ? new FileResponseDTO(spending.getVoucher(), fileDownloadUri) : null
+                spending.getVoucher() != null ? new FileResponseDTO(spending.getVoucher()) : null
         );
     }
 }
