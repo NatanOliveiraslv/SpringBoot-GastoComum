@@ -1,5 +1,6 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.users.AuthenticationRequestDTO;
 import com.br.gasto_comum.dtos.users.UserRequestDTO;
 import com.br.gasto_comum.dtos.users.UserResponseDTO;
@@ -15,6 +16,8 @@ import com.br.gasto_comum.repositorys.RefreshTokenRepository;
 import com.br.gasto_comum.repositorys.UserRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -92,6 +95,14 @@ public class UserService {
 
     public void revokeRefreshToken(UUID refreshToken) {
         refreshTokenRepository.deleteById(refreshToken);
+    }
+
+    public Page<UserResponseDTO> listUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserResponseDTO::new);
+    }
+
+    public Page<UserResponseDTO> findUsersByNameOrEmailContaining(String searchQuery, Pageable pageable) {
+        return userRepository.findByFirstNameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchQuery, searchQuery, pageable).map(UserResponseDTO::new);
     }
 
 }

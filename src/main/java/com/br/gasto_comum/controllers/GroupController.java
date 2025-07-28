@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/api/group")
 public class GroupController {
 
     @Autowired

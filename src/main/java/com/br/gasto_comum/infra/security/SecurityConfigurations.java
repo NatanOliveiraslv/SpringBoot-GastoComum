@@ -31,23 +31,24 @@ public class SecurityConfigurations {
     @Autowired
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/auth/sign-in",
-            "/auth/register",
+            "/api/auth/sign-in",
+            "/api/auth/register",
             "/error",
-            "/auth/logout",
-            "/auth/refresh-token",
-            "/spending/voucher/download/**",
+            "/api/auth/logout",
+            "/api/auth/refresh-token",
+            "/api/spending/voucher/download/**",
     };
 
-    // Endpoints que requerem autenticação para serem acessados
+    // Endpoints que requerem autenticação para serem acessadoss
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/spending",
-            "/spending/**",
-            "/expenses-divided-accounts",
-            "/expenses-divided-accounts/spending/**",
-            "/expenses-divided-accounts/pay/**",
-            "/group",
-            "/group/add-spending",
+            "/api/spending",
+            "/api/spending/**",
+            "/api/expenses-divided-accounts",
+            "/api/expenses-divided-accounts/spending/**",
+            "/api/expenses-divided-accounts/pay/**",
+            "/api/group",
+            "/api/group/add-spending",
+            "/api/user",
     };
 
     @Bean

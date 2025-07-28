@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/expenses-divided-accounts")
+@RequestMapping("/api/expenses-divided-accounts")
 public class ExpensesDividedAccontsController {
 
     @Autowired
