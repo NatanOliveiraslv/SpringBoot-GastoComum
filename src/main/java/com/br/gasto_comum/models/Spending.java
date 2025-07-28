@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,6 +74,7 @@ public class Spending {
         this.value = data.value();
         this.description = data.description();
         this.dateSpending = data.dateSpending();
+        this.expensesDividedAcconts = new ArrayList<>();
     }
 
     public void update(SpendingUpdateDTO data) {
@@ -88,6 +90,9 @@ public class Spending {
     }
 
     public boolean checkIfTheUserIsSpending(User user) {
+        if (this.expensesDividedAcconts == null || this.expensesDividedAcconts.isEmpty()) {
+            return false;
+        }
         for (ExpensesDividedAcconts e : this.expensesDividedAcconts) {
             if (e.getUser().equals(user)) {
                 return true;

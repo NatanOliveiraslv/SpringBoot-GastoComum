@@ -6,7 +6,9 @@ import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.exceptions.ObjectNotFound;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
+import com.br.gasto_comum.models.ExpensesDividedAcconts;
 import com.br.gasto_comum.models.Spending;
+import com.br.gasto_comum.repositorys.ExpensesDividedAccontsRepository;
 import com.br.gasto_comum.repositorys.SpendingRepository;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.UserRepository;
@@ -28,20 +30,26 @@ public class SpendingService {
     @Autowired
     private SpendingRepository spendingRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private FileService fileService;
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
+    @Autowired
+    ExpensesDividedAccontsService expensesDividedAccontsService;
 
     public SpendingResponseDTO createSpending(SpendingRequestDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = new Spending(data);
         spendingEntity.setUser(user);
-        System.out.println(user.getUsername());
         if(file != null) {
             spendingEntity.setVoucher(fileService.uploadFile(file));
         }
+
         spendingRepository.save(spendingEntity);
+
+        if (data.participantsId() != null && !data.participantsId().isEmpty()) {
+            for (var participantId : data.participantsId()) {
+                expensesDividedAccontsService.addExpensesDividedAcconts(spendingEntity, participantId);
+            }
+        }
         return new SpendingResponseDTO(spendingEntity);
     }
 

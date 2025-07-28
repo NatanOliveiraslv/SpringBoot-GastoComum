@@ -54,6 +54,7 @@ public class ExpensesDividedAcconts {
         this.user = user;
         this.status = Status.PENDING;
         this.spending = spending;
+        this.value = 0.0;
     }
 
     public void makePayment(double value) {

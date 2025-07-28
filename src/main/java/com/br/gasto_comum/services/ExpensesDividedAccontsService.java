@@ -8,6 +8,7 @@ import com.br.gasto_comum.exceptions.UnauthorizedUser;
 import com.br.gasto_comum.exceptions.UserIsAlreadyInExpense;
 import com.br.gasto_comum.infra.security.TokenService;
 import com.br.gasto_comum.models.ExpensesDividedAcconts;
+import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.repositorys.ExpensesDividedAccontsRepository;
 import com.br.gasto_comum.repositorys.SpendingRepository;
 import com.br.gasto_comum.models.User;
@@ -22,8 +23,6 @@ import java.util.UUID;
 public class ExpensesDividedAccontsService {
 
     @Autowired
-    private TokenService tokenService;
-    @Autowired
     private ExpensesDividedAccontsRepository expensesDividedAccontsRepository;
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +36,14 @@ public class ExpensesDividedAccontsService {
         if (spending.checkIfTheUserIsSpending(user)) {
             throw new UserIsAlreadyInExpense();
         }
-        var dataUser = userRepository.findById(data.userId()).orElseThrow(() -> new ObjectNotFound("Usuário não encontrado"));
+        var expensesDividedAcconts = addExpensesDividedAcconts(spending, user.getId());
+
+        return new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts);
+    }
+
+    public ExpensesDividedAcconts addExpensesDividedAcconts(Spending spending, UUID participant) {
+
+        var dataUser = userRepository.findById(participant).orElseThrow(() -> new ObjectNotFound("Usuário não encontrado"));
         var expensesDividedAcconts = new ExpensesDividedAcconts(dataUser, spending);
         expensesDividedAccontsRepository.save(expensesDividedAcconts);
 
@@ -52,7 +58,7 @@ public class ExpensesDividedAccontsService {
             expensesDividedAccontsRepository.save(e);
         }
 
-        return new ExpensesDividedAccontsResponseDTO(expensesDividedAcconts);
+        return expensesDividedAcconts;
     }
 
     public List<ExpensesDividedAccontsResponseListDTO> listSpendingByUserId(User user) {
