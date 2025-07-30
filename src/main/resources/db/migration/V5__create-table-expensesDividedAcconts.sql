@@ -10,5 +10,5 @@ create table expensesDividedAcconts(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT fk_expensesDividedAcconts_spending FOREIGN KEY (spending_id) REFERENCES spending(id)
+    CONSTRAINT fk_expensesDividedAcconts_spending FOREIGN KEY (spending_id) REFERENCES spending(id) ON DELETE CASCADE
 );

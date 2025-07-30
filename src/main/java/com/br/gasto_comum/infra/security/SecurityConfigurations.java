@@ -37,6 +37,7 @@ public class SecurityConfigurations {
             "/api/auth/logout",
             "/api/auth/refresh-token",
             "/api/spending/voucher/download/**",
+            "/api/user/profile-picture/download/**",
     };
 
     // Endpoints que requerem autenticação para serem acessadoss
@@ -49,6 +50,7 @@ public class SecurityConfigurations {
             "/api/group",
             "/api/group/add-spending",
             "/api/user",
+            "/api/user/profile-picture/upload",
     };
 
     @Bean

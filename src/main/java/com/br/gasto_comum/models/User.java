@@ -4,10 +4,6 @@ package com.br.gasto_comum.models;
 import com.br.gasto_comum.dtos.users.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,10 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity(name = "User")
 @Table(name = "users")
@@ -60,6 +53,10 @@ public class User implements UserDetails {
     @OneToMany (mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "profile_picture_id")
+    private File profilePicture;
+
     public User(UserRequestDTO data) {
         this.username = data.userName();
         this.password = data.password();
@@ -67,7 +64,6 @@ public class User implements UserDetails {
         this.lastName = data.lastName();
         this.email = data.email();
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,7 @@
 package com.br.gasto_comum.services;
 
+import com.br.gasto_comum.dtos.File.FileResponseDTO;
+import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.users.AuthenticationRequestDTO;
 import com.br.gasto_comum.dtos.users.UserRequestDTO;
@@ -10,22 +12,32 @@ import com.br.gasto_comum.exceptions.UserAlreadyRegistered;
 import com.br.gasto_comum.dtos.users.AuthenticationResponseDTO;
 import com.br.gasto_comum.infra.security.SecurityConfigurations;
 import com.br.gasto_comum.infra.security.TokenService;
+import com.br.gasto_comum.models.File;
 import com.br.gasto_comum.models.RefreshToken;
+import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.RefreshTokenRepository;
 import com.br.gasto_comum.repositorys.UserRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -37,15 +49,16 @@ public class UserService {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private TokenService tokenService;
-
     @Autowired
     private SecurityConfigurations securityConfiguration;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
 
     private static final Duration refreshTokenTtl = Duration.ofDays(7);
 
@@ -103,6 +116,42 @@ public class UserService {
 
     public Page<UserResponseDTO> findUsersByNameOrEmailContaining(String searchQuery, Pageable pageable) {
         return userRepository.findByFirstNameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchQuery, searchQuery, pageable).map(UserResponseDTO::new);
+    }
+
+    public FileResponseDTO uploadProfilePicture(MultipartFile file, User user) throws IOException, NoSuchAlgorithmException {
+        if (file == null || file.isEmpty()) {
+            throw new ValidationException("Arquivo não pode ser nulo ou vazio");
+        }
+
+        // Validate file type
+        String contentType = file.getContentType();
+        if (!List.of("image/jpeg", "image/png", "image/gif").contains(contentType)) {
+            throw new ValidationException("Tipo de arquivo inválido. Apenas imagens JPEG, PNG e GIF são permitidas.");
+        }
+
+        File profilePicture = fileService.uploadFile(file);
+        user.setProfilePicture(profilePicture);
+        userRepository.save(user);
+        return new FileResponseDTO(profilePicture);
+    }
+
+    public Resource downloadProfilePicture(UUID user) {
+
+        List<String> defaultProfilePictureUrls = List.of(
+                "default_avatar_1.jpg",
+                "default_avatar_2.jpg",
+                "default_avatar_3.jpg",
+                "default_avatar_4.jpg"
+        );
+
+        var userEntity = userRepository.findById(user).orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+        if (userEntity.getProfilePicture() == null) {
+            Random random = new Random();
+            int index = random.nextInt(defaultProfilePictureUrls.size());
+            return new ClassPathResource("/static/profile_pictures/" + defaultProfilePictureUrls.get(index));
+        }
+        String systemFileName = userEntity.getProfilePicture().getSystemFileName();
+        return fileSystemStorageService.loadFileAsResource(systemFileName);
     }
 
 }

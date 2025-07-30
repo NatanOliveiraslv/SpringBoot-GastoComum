@@ -88,8 +88,8 @@ public class SpendingService {
     }
 
 
-    public Resource downloadFile(String hash) {
-        return fileSystemStorageService.loadFileAsResource(hash);
+    public Resource downloadFile(String systemFileName) {
+        return fileSystemStorageService.loadFileAsResource(systemFileName);
     }
 
 }

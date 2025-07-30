@@ -25,9 +25,6 @@ public class FileSystemStorageService implements FileStorageService {
     private final Path fileStorageLocation;
 
     @Autowired
-    private FileRepository fileRepository;
-
-    @Autowired
     public FileSystemStorageService(FileStorageProperty fileStorageProperty) throws IOException {
         this.fileStorageLocation = Paths.get(fileStorageProperty.getUploadDirectory()).toAbsolutePath().normalize();
         Files.createDirectories(this.fileStorageLocation);

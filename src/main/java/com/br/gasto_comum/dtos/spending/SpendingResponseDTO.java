@@ -1,5 +1,6 @@
 package com.br.gasto_comum.dtos.spending;
 
+import com.br.gasto_comum.enums.Status;
 import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.enums.Type;
 
@@ -11,7 +12,8 @@ public record SpendingResponseDTO(
         String title,
         Double value,
         String description,
-        int totalParticipants
+        int totalParticipants,
+        int totalPayingCustomers
 ) {
     public SpendingResponseDTO(Spending spendingEntity) {
         this(
@@ -20,7 +22,10 @@ public record SpendingResponseDTO(
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
-                spendingEntity.getExpensesDividedAcconts() == null ? 0 : spendingEntity.getExpensesDividedAcconts().size()
+                spendingEntity.getExpensesDividedAcconts() == null ? 0 : spendingEntity.getExpensesDividedAcconts().size(),
+                spendingEntity.getExpensesDividedAcconts() == null ? 0 : (int) spendingEntity.getExpensesDividedAcconts().stream()
+                        .filter(expense -> expense.getStatus() == Status.PAID)
+                        .count()
         );
     }
 }
