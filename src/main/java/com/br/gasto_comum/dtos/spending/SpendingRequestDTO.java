@@ -21,6 +21,6 @@ public record SpendingRequestDTO(
         String description,
         @NotNull
         LocalDate dateSpending,
-        List<UUID> participantsId
+        List<UUID> participantIds
         ) {
 }

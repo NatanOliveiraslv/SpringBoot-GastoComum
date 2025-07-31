@@ -5,7 +5,7 @@ public enum Type {
     TRANSPORTE("Transporte"),
     UTILITARIAS("Utilitárias"),
     CASA("Casa"),
-    ENTRETEDIMENTO("Entretedimento"),
+    ENTRETENIMENTO("Entretenimento"),
     SAUDE("Saúde"),
     SHOPPING("Shopping"),
     EDUCACAO("Educação"),

@@ -45,8 +45,8 @@ public class SpendingService {
 
         spendingRepository.save(spendingEntity);
 
-        if (data.participantsId() != null && !data.participantsId().isEmpty()) {
-            for (var participantId : data.participantsId()) {
+        if (data.participantIds() != null && !data.participantIds().isEmpty()) {
+            for (var participantId : data.participantIds()) {
                 expensesDividedAccontsService.addExpensesDividedAcconts(spendingEntity, participantId);
             }
         }

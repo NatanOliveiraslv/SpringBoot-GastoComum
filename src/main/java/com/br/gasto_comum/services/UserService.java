@@ -110,12 +110,13 @@ public class UserService {
         refreshTokenRepository.deleteById(refreshToken);
     }
 
-    public Page<UserResponseDTO> listUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).map(UserResponseDTO::new);
+    public Page<UserResponseDTO> listUsers(Pageable pageable, User currentUser) {
+        return userRepository.findByIdIsNot(currentUser.getId(), pageable)
+                .map(UserResponseDTO::new);
     }
 
-    public Page<UserResponseDTO> findUsersByNameOrEmailContaining(String searchQuery, Pageable pageable) {
-        return userRepository.findByFirstNameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchQuery, searchQuery, pageable).map(UserResponseDTO::new);
+    public Page<UserResponseDTO> findUsersByNameOrEmailContaining(String searchQuery, Pageable pageable, User currentUser) {
+        return userRepository.findByFirstNameOrEmailContainingIgnoreCaseAndIdIsNot(searchQuery, currentUser.getId(), pageable).map(UserResponseDTO::new);
     }
 
     public FileResponseDTO uploadProfilePicture(MultipartFile file, User user) throws IOException, NoSuchAlgorithmException {
@@ -154,4 +155,7 @@ public class UserService {
         return fileSystemStorageService.loadFileAsResource(systemFileName);
     }
 
+    public UserResponseDTO getCurrentUser(User user) {
+        return new UserResponseDTO(user);
+    }
 }

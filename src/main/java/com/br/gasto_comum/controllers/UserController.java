@@ -29,17 +29,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getCurrentUser(user));
+    }
+
     @GetMapping
-    public ResponseEntity<Page<UserResponseDTO>> listUser(@RequestParam(required = false) String searchQuery, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
+    public ResponseEntity<Page<UserResponseDTO>> listUser(@RequestParam(required = false) String searchQuery, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable, @AuthenticationPrincipal User user) {
 
         Page<UserResponseDTO> userPage;
 
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            // Se um termo de busca foi fornecido, busque por nome OU e-mail
-            userPage = userService.findUsersByNameOrEmailContaining(searchQuery, pageable);
+            userPage = userService.findUsersByNameOrEmailContaining(searchQuery, pageable, user);
         } else {
-            // Caso contrário, liste todos (paginado)
-            userPage = userService.listUsers(pageable);
+            userPage = userService.listUsers(pageable, user);
         }
 
         return ResponseEntity.ok(userPage);
