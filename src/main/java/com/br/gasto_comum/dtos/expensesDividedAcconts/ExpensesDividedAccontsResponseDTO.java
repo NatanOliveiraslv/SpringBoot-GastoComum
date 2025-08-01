@@ -7,7 +7,8 @@ import java.util.UUID;
 
 public record ExpensesDividedAccontsResponseDTO (
         UUID id,
-        String firstName,
+        UUID userId,
+        String userFirstName,
         Status status,
         Double value,
         String spendingTitle
@@ -15,6 +16,7 @@ public record ExpensesDividedAccontsResponseDTO (
     public ExpensesDividedAccontsResponseDTO(ExpensesDividedAcconts expensesDividedAcconts) {
         this(
                 expensesDividedAcconts.getId(),
+                expensesDividedAcconts.getUser().getId(),
                 expensesDividedAcconts.getUser().getFirstName(),
                 expensesDividedAcconts.getStatus(),
                 expensesDividedAcconts.getValue(),

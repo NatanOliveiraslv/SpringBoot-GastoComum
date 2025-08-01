@@ -32,11 +32,9 @@ public class FileSystemStorageService implements FileStorageService {
 
     @Override
     public String storeFile(MultipartFile file) throws IOException {
-        // Normaliza o nome do arquivo para evitar problemas de caminho
         String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-
-        // Gera um nome de arquivo único para evitar colisões
-        String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
+        String extension = originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
+        String fileName = UUID.randomUUID().toString() + "_" + "imagem." + extension;
 
         try {
             // Verifica se o arquivo contém caracteres inválidos
@@ -46,7 +44,7 @@ public class FileSystemStorageService implements FileStorageService {
 
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            return fileName; // Retorna o nome único do arquivo no sistema
+            return fileName;
         } catch (IOException ex) {
             throw new IOException("Não foi possível armazenar o arquivo " + originalFileName, ex);
         }

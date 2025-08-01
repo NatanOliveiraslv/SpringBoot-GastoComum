@@ -12,6 +12,8 @@ import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.GroupRepository;
 import com.br.gasto_comum.repositorys.SpendingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,8 +51,8 @@ public class GroupService {
         return new GroupResponseDatailDTO(group);
     }
 
-    public List<GroupResponseDTO> listGroup(User user) {
-        return groupRepository.findByUser(user).stream().map(GroupResponseDTO::new).toList();
+    public Page<GroupResponseDTO> listGroup(User user, Pageable pageable) {
+        return groupRepository.findByUser(user, pageable).map(GroupResponseDTO::new);
     }
 
     public GroupResponseDatailDTO detailGroup(UUID id, User user) {

@@ -9,6 +9,9 @@ import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.services.GroupService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,8 +44,8 @@ public class GroupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GroupResponseDTO>> getAllGroups(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(groupService.listGroup(user));
+    public ResponseEntity<Page<GroupResponseDTO>> listGroups(@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(groupService.listGroup(user, pageable));
     }
 
     @GetMapping("/{id}")
