@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public record GroupRequestAddSpendingDTO(
         UUID groupId,
-        List<UUID> spendingId
+        List<UUID> spendingIds
 ) {
 }

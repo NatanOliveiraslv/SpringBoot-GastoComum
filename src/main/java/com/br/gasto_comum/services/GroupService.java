@@ -31,6 +31,11 @@ public class GroupService {
         var groupEntity = new Group(data);
         groupEntity.setUser(user);
         groupRepository.save(groupEntity);
+
+        if (data.spendingIds() != null && !data.spendingIds().isEmpty()) {
+            functionAddSpendingToGroupt(groupEntity, data.spendingIds(), user);
+        }
+
         return new GroupResponseDTO(groupEntity);
     }
 
@@ -40,7 +45,12 @@ public class GroupService {
             throw new UnauthorizedUser("Usuário não possui autorização para alterar o Grupo!");  // Forbidden
         }
 
-        for(var spendingId : data.spendingId()) {
+        functionAddSpendingToGroupt(group, data.spendingIds(), user);
+        return new GroupResponseDatailDTO(group);
+    }
+
+    private void functionAddSpendingToGroupt(Group group, List<UUID> spendingIds, User user) {
+        for(var spendingId : spendingIds) {
             var spendingEntity = spendingRepository.findById(spendingId).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado. ID: " + spendingId));
             if (!spendingEntity.getUser().equals(user)) {
                 throw new UnauthorizedUser("Acesso negado ao gasto. ID:" + spendingId);  // Forbidden
@@ -48,7 +58,6 @@ public class GroupService {
             group.addSpending(spendingEntity);
         }
         groupRepository.save(group);
-        return new GroupResponseDatailDTO(group);
     }
 
     public Page<GroupResponseDTO> listGroup(User user, Pageable pageable) {

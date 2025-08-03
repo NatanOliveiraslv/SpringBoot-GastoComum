@@ -57,6 +57,10 @@ public class SpendingService {
         return spendingRepository.findByUser(user, pageable).map(SpendingResponseDTO::new);
     }
 
+    public Page<SpendingResponseDTO> searchSpending(String searchQuery, Pageable pageable, User user) {
+        return spendingRepository.findByUserAndTitleContainingIgnoreCase(user, searchQuery, pageable).map(SpendingResponseDTO::new);
+    }
+
     public SpendingResponseDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = spendingRepository.findById(data.id()).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));
         if (!spendingEntity.getUser().equals(user)) {

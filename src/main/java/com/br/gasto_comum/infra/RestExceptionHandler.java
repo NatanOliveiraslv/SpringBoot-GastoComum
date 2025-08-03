@@ -28,13 +28,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(threadErrorMessage);
     }
 
-    @ExceptionHandler(ExpiredRefreshToken.class)
+    @ExceptionHandler(UserAlreadyRegistered.class)
     private ResponseEntity<RestErrorMessage> userAlreadyRegistered(UserAlreadyRegistered exception) {
         RestErrorMessage threadErrorMessage = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(threadErrorMessage);
     }
 
-    @ExceptionHandler(UserAlreadyRegistered.class)
+    @ExceptionHandler(ExpiredRefreshToken.class)
     private ResponseEntity<RestErrorMessage> expiredRefreshToken(ExpiredRefreshToken exception) {
         RestErrorMessage threadErrorMessage = new RestErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(threadErrorMessage);

@@ -29,4 +29,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             UUID excludedId, // ID do usuário a ser excluído
             Pageable pageable // Parâmetro de paginação
     );
+
 }

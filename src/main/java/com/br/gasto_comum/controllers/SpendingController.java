@@ -53,8 +53,17 @@ public class SpendingController {
 
 
     @GetMapping
-    public ResponseEntity<Page<SpendingResponseDTO>> listSpending(@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
-        return ResponseEntity.ok(spendingService.listSpending(user, pageable));
+    public ResponseEntity<Page<SpendingResponseDTO>> listSpending(@RequestParam(required = false) String searchTitle, @AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
+
+        Page<SpendingResponseDTO> spendingPage;
+
+        if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+            spendingPage = spendingService.searchSpending(searchTitle, pageable, user);
+        } else {
+            spendingPage = spendingService.listSpending(user, pageable);
+        }
+
+        return ResponseEntity.ok(spendingPage);
     }
 
     @PutMapping(consumes = "multipart/form-data")
