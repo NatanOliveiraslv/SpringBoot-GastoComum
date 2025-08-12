@@ -53,12 +53,16 @@ public class SpendingService {
         return new SpendingResponseDTO(spendingEntity);
     }
 
-    public Page<SpendingResponseDTO> listSpending(User user, Pageable pageable) {
-        return spendingRepository.findByUser(user, pageable).map(SpendingResponseDTO::new);
+    public Page<SpendingResponseDTO> listSpending(User user, Pageable pageable, boolean onlyWithoutGroup) {
+        if (onlyWithoutGroup) {
+            return spendingRepository
+                    .findByUserAndGroupIsNull(user, pageable).map(SpendingResponseDTO::new);
+        }
+        return spendingRepository.findByUserAndGroupIsNull(user, pageable).map(SpendingResponseDTO::new);
     }
 
     public Page<SpendingResponseDTO> searchSpending(String searchQuery, Pageable pageable, User user) {
-        return spendingRepository.findByUserAndTitleContainingIgnoreCase(user, searchQuery, pageable).map(SpendingResponseDTO::new);
+        return spendingRepository.findByUserAndTitleContainingIgnoreCaseAndGroupIsNull(user, searchQuery, pageable).map(SpendingResponseDTO::new);
     }
 
     public SpendingResponseDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {

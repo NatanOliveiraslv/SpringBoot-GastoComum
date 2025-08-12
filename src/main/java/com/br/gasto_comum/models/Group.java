@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,14 +56,21 @@ public class Group {
         this.name = data.name();
         this.description = data.description();
         this.total_value = 0.0;
+        this.spendings = new ArrayList<>();
     }
 
     public boolean checkIfTheSpendingIsGroup(Spending spending) {
+
         for (Spending e : this.spendings) {
             if (e.getId().equals(spending.getId())) {
                 return true;
             }
         }
+
+        if (spending.getId() != null) {
+            throw new SpendingIsAlreadyInGroup("Gasto já está em outro grupo. ID: " + spending.getGroup().getId());
+        }
+
         return false;
     }
 

@@ -15,5 +15,6 @@ import java.util.UUID;
 @Repository
 public interface SpendingRepository extends JpaRepository<Spending, UUID> {
     Page<Spending> findByUser(User user, Pageable pageable);
-    Page<Spending> findByUserAndTitleContainingIgnoreCase(User user, String title, Pageable pageable);
+    Page<Spending> findByUserAndGroupIsNull(User user, Pageable pageable);
+    Page<Spending> findByUserAndTitleContainingIgnoreCaseAndGroupIsNull(User user, String title, Pageable pageable);
 }
