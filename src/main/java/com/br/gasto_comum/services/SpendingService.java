@@ -6,22 +6,20 @@ import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
 import com.br.gasto_comum.exceptions.ObjectNotFound;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
-import com.br.gasto_comum.models.ExpensesDividedAcconts;
 import com.br.gasto_comum.models.Spending;
-import com.br.gasto_comum.repositorys.ExpensesDividedAccontsRepository;
+import com.br.gasto_comum.queryFilters.SpendingQueryFilter;
 import com.br.gasto_comum.repositorys.SpendingRepository;
 import com.br.gasto_comum.models.User;
-import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.br.gasto_comum.specification.SpendingSpecification;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -53,17 +51,13 @@ public class SpendingService {
         return new SpendingResponseDTO(spendingEntity);
     }
 
-    public Page<SpendingResponseDTO> listSpending(User user, Pageable pageable, boolean onlyWithoutGroup) {
-        if (onlyWithoutGroup) {
-            return spendingRepository
-                    .findByUserAndGroupIsNull(user, pageable).map(SpendingResponseDTO::new);
-        }
-        return spendingRepository.findByUserAndGroupIsNull(user, pageable).map(SpendingResponseDTO::new);
+    public Page<SpendingResponseDTO> listSpending(User user, Pageable pageable, SpendingQueryFilter filter) {
+        return spendingRepository.findAll(filter.toSpecification(user), pageable).map(SpendingResponseDTO::new);
     }
 
-    public Page<SpendingResponseDTO> searchSpending(String searchQuery, Pageable pageable, User user) {
-        return spendingRepository.findByUserAndTitleContainingIgnoreCaseAndGroupIsNull(user, searchQuery, pageable).map(SpendingResponseDTO::new);
-    }
+//    public Page<SpendingResponseDTO> searchSpending(String searchQuery, Pageable pageable, User user) {
+//        return spendingRepository.findByUserAndTitleContainingIgnoreCaseAndGroupIsNull(user, searchQuery, pageable).map(SpendingResponseDTO::new);
+//    }
 
     public SpendingResponseDTO updateSpending(SpendingUpdateDTO data, User user, MultipartFile file) throws NoSuchAlgorithmException, IOException {
         var spendingEntity = spendingRepository.findById(data.id()).orElseThrow(() -> new ObjectNotFound("Gasto não encontrado"));

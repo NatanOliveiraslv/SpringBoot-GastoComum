@@ -1,38 +1,28 @@
 package com.br.gasto_comum.specification;
 
 import com.br.gasto_comum.models.Spending;
-import io.micrometer.common.util.StringUtils;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
-
-import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.util.ObjectUtils;
 
 
-public class SpendingSpecification implements Specification<Spending> {
+public class SpendingSpecification{
 
-    public String title;
-    public String groupName;
-    boolean containsGroup;
+    public static Specification<Spending> searchByTitle(String title) {
 
-    public SpendingSpecification(String title, String groupName, boolean containsGroup) {
-        this.title = title;
-        this.groupName = groupName;
-        this.containsGroup = containsGroup;
+        return (root, query, builder) -> {
+            if (ObjectUtils.isEmpty(title)) {
+                return null;
+            }
+            return builder.like(builder.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+        };
     }
 
-    @Override
-    public Predicate toPredicate(Root<Spending> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-        if (StringUtils.isNotEmpty(this.title)) {
-            predicates.add(criteriaBuilder.like(root.get("title"), "%" + this.title + "%"));
-        }
-        if (StringUtils.isNotEmpty(this.groupName)) {
-            predicates.add(criteriaBuilder.equal(root.get("group").get("name"), this.groupName));
-        }
-        return criteriaBuilder.and(predicates.stream().toArray(Predicate[]::new));
+    public static Specification<Spending> searchByGroupIsNull(Boolean containsGroup) {
+        return (root, query, builder) -> {
+            if (containsGroup == null || !containsGroup) {
+                return null;
+            }
+            return builder.isNull(root.get("group"));
+        };
     }
 }

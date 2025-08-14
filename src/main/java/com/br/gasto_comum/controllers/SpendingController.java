@@ -4,6 +4,7 @@ import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.dtos.spending.SpendingUpdateDTO;
+import com.br.gasto_comum.queryFilters.SpendingQueryFilter;
 import com.br.gasto_comum.services.SpendingService;
 import com.br.gasto_comum.models.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,16 +54,9 @@ public class SpendingController {
 
 
     @GetMapping
-    public ResponseEntity<Page<SpendingResponseDTO>> listSpending(@RequestParam(required = false) String title, @RequestPart(required = false) contemGrupo@AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
-
+    public ResponseEntity<Page<SpendingResponseDTO>> listSpending(SpendingQueryFilter filter, @AuthenticationPrincipal User user, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable) {
         Page<SpendingResponseDTO> spendingPage;
-
-        if (title != null && !title.trim().isEmpty()) {
-            spendingPage = spendingService.searchSpending(title, pageable, user);
-        } else {
-            spendingPage = spendingService.listSpending(user, pageable);
-        }
-
+        spendingPage = spendingService.listSpending(user, pageable, filter);
         return ResponseEntity.ok(spendingPage);
     }
 
