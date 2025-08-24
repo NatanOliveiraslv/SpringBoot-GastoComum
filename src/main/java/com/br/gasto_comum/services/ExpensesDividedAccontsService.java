@@ -3,17 +3,22 @@ package com.br.gasto_comum.services;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseListDTO;
+import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.exceptions.ObjectNotFound;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
 import com.br.gasto_comum.exceptions.UserIsAlreadyInExpense;
 import com.br.gasto_comum.infra.security.TokenService;
 import com.br.gasto_comum.models.ExpensesDividedAcconts;
 import com.br.gasto_comum.models.Spending;
+import com.br.gasto_comum.queryFilters.ExpensesDividedAccontsQueryFilter;
+import com.br.gasto_comum.queryFilters.SpendingQueryFilter;
 import com.br.gasto_comum.repositorys.ExpensesDividedAccontsRepository;
 import com.br.gasto_comum.repositorys.SpendingRepository;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,8 +66,8 @@ public class ExpensesDividedAccontsService {
         return expensesDividedAcconts;
     }
 
-    public List<ExpensesDividedAccontsResponseListDTO> listSpendingByUserId(User user) {
-        return expensesDividedAccontsRepository.findByUser(user).stream().map(ExpensesDividedAccontsResponseListDTO::new).toList();
+    public Page<ExpensesDividedAccontsResponseListDTO> listExpensesDividedAcconts(User user, Pageable pageable, ExpensesDividedAccontsQueryFilter filter) {
+        return expensesDividedAccontsRepository.findAll(filter.toSpecification(user), pageable).map(ExpensesDividedAccontsResponseListDTO::new);
     }
 
     public ExpensesDividedAccontsResponseDTO payExpensesDividedAcconts(UUID id, double value, User user) {

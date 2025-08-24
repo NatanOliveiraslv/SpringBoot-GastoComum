@@ -4,6 +4,7 @@ import com.br.gasto_comum.enums.Status;
 import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.enums.Type;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record SpendingResponseDTO(
@@ -12,6 +13,7 @@ public record SpendingResponseDTO(
         String title,
         Double value,
         String description,
+        LocalDate dateSpending,
         int totalParticipants,
         int totalPayingCustomers
 ) {
@@ -22,6 +24,7 @@ public record SpendingResponseDTO(
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
+                spendingEntity.getDateSpending(),
                 spendingEntity.getExpensesDividedAcconts() == null ? 0 : spendingEntity.getExpensesDividedAcconts().size(),
                 spendingEntity.getExpensesDividedAcconts() == null ? 0 : (int) spendingEntity.getExpensesDividedAcconts().stream()
                         .filter(expense -> expense.getStatus() == Status.PAID)

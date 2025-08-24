@@ -51,6 +51,7 @@ public class SecurityConfigurations {
             "/api/group/add-spending",
             "/api/user",
             "/api/user/profile-picture/upload",
+            "/api/dashboard"
     };
 
     @Bean

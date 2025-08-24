@@ -11,7 +11,6 @@ public record GroupResponseDatailDTO(
         String name,
         String description,
         Double totalValue,
-        String userName,
         List<SpendingResponseDTO> spendings
 ) {
     public GroupResponseDatailDTO(Group group) {
@@ -20,7 +19,6 @@ public record GroupResponseDatailDTO(
                 group.getName(),
                 group.getDescription(),
                 group.getTotal_value() != null ? group.getTotal_value() : 0.0,
-                group.getUser().getUsername(),
                 group.getSpendings().stream()
                         .map(SpendingResponseDTO::new)
                         .toList()

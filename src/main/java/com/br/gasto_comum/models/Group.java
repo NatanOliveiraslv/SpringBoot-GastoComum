@@ -67,7 +67,7 @@ public class Group {
             }
         }
 
-        if (spending.getId() != null) {
+        if (spending.getGroup() != null) {
             throw new SpendingIsAlreadyInGroup("Gasto já está em outro grupo. ID: " + spending.getGroup().getId());
         }
 

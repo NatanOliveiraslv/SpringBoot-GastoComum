@@ -4,17 +4,20 @@ import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsPayD
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsRequestDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseDTO;
 import com.br.gasto_comum.dtos.expensesDividedAcconts.ExpensesDividedAccontsResponseListDTO;
+import com.br.gasto_comum.queryFilters.ExpensesDividedAccontsQueryFilter;
 import com.br.gasto_comum.services.ExpensesDividedAccontsService;
 import com.br.gasto_comum.models.User;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,9 +35,11 @@ public class ExpensesDividedAccontsController {
         return ResponseEntity.created(uri).body(ExpensesDividedAcconts);
     }
 
-    @GetMapping("/spending")
-    public ResponseEntity<List<ExpensesDividedAccontsResponseListDTO>> listSpendingByUserId(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(expensesDividedAccontsService.listSpendingByUserId(user));
+    @GetMapping()
+    public ResponseEntity<Page<ExpensesDividedAccontsResponseListDTO>> listSpendingByUserId(ExpensesDividedAccontsQueryFilter filter, @PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable, @AuthenticationPrincipal User user) {
+        Page<ExpensesDividedAccontsResponseListDTO> expensesDividedAccontsPage;
+        expensesDividedAccontsPage = expensesDividedAccontsService.listExpensesDividedAcconts(user, pageable, filter);
+        return ResponseEntity.ok(expensesDividedAccontsPage);
     }
 
     @PutMapping("/pay/{id}")

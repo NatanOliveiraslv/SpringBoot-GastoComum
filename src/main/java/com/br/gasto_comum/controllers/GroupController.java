@@ -8,6 +8,7 @@ import com.br.gasto_comum.dtos.spending.SpendingResponseDetailDTO;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.services.GroupService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<GroupResponseDTO> createGroup(@RequestBody GroupRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
+    public ResponseEntity<GroupResponseDTO> createGroup(@RequestBody @Valid GroupRequestDTO data, UriComponentsBuilder uriBuilder, @AuthenticationPrincipal User user) {
         GroupResponseDTO groupEntity = groupService.createGroup(data, user);
         var uri = uriBuilder.path("/group/{id}").buildAndExpand(groupEntity.id()).toUri();
         return ResponseEntity.created(uri).body(groupEntity);
@@ -38,7 +39,7 @@ public class GroupController {
     // Endpoint para adicionar gastos a um grupo
     @PostMapping("/add/spending")
     @Transactional
-    public ResponseEntity<GroupResponseDatailDTO> addSpendingToGroup(@RequestBody GroupRequestAddSpendingDTO data, @AuthenticationPrincipal User user) {
+    public ResponseEntity<GroupResponseDatailDTO> addSpendingToGroup(@RequestBody @Valid GroupRequestAddSpendingDTO data, @AuthenticationPrincipal User user) {
         GroupResponseDatailDTO response = groupService.addSpendingToGroup(data, user);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
