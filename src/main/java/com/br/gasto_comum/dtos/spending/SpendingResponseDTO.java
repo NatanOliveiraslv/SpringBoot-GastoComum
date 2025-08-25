@@ -10,6 +10,7 @@ import java.util.UUID;
 public record SpendingResponseDTO(
         UUID id,
         String type,
+        Type enumType,
         String title,
         Double value,
         String description,
@@ -21,6 +22,7 @@ public record SpendingResponseDTO(
         this(
                 spendingEntity.getId(),
                 spendingEntity.getType().getNameType(),
+                spendingEntity.getType(),
                 spendingEntity.getTitle(),
                 spendingEntity.getValue(),
                 spendingEntity.getDescription(),
