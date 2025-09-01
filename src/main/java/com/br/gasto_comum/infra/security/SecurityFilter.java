@@ -83,7 +83,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        for (String publicEndpoint : SecurityConfigurations.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED) {
+        for (String publicEndpoint : SecurityConfigurations.ENDPOINTS_PERMIT_ALL) {
             // Se o requestURI corresponde a um dos padrões públicos
             if (pathMatcher.match(publicEndpoint, requestURI)) {
                 return false;

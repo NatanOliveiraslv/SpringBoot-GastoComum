@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gastocomum_api?useTimezone=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        type:
+          preferred_uuid_jdbc_type: CHAR
+  web:
+    resources:
+      add-mappings: true
+  servlet:
+    multipart:
+      max-file-size: 16MB
+      max-request-size: 16MB
+  security:
+    oauth2:
+      client:
+        registration:
+            google:
+                client-id: ${GOOGLE_CLIENT_ID}
+                client-secret: ${GOOGLE_CLIENT_SECRET}
+                scope:
+                  - openid
+                  - profile
+                  - email
+server:
+  error:
+    include-stacktrace: never
+logging:
+    level:
+        org:
+        springframework:
+            security: DEBUG
+api:
+  security:
+    token:
+      secret: ${JWT_secret:123456}
+cors:
+  allowedOrigin: http://localhost:3000
+file:
+  upload-directory: file-storage
+frontend:
+  url: http://192.168.0.13:3000

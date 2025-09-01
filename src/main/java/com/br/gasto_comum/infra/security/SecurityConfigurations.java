@@ -1,7 +1,7 @@
 package com.br.gasto_comum.infra.security;
 
+import com.br.gasto_comum.services.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,9 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
@@ -29,8 +26,11 @@ public class SecurityConfigurations {
     @Autowired
     private SecurityFilter securityFilter;
     @Autowired
+    private CustomOidcUserService customOidcUserService;
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler successHandler;
 
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+    public static final String [] ENDPOINTS_PERMIT_ALL = {
             "/api/auth/sign-in",
             "/api/auth/register",
             "/error",
@@ -40,34 +40,24 @@ public class SecurityConfigurations {
             "/api/user/profile-picture/download/**",
     };
 
-    // Endpoints que requerem autenticação para serem acessadoss
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/api/spending",
-            "/api/spending/**",
-            "/api/expenses-divided-accounts",
-            "/api/expenses-divided-accounts/spending/**",
-            "/api/expenses-divided-accounts/pay/**",
-            "/api/group",
-            "/api/group/add-spending",
-            "/api/user",
-            "/api/user/profile-picture/upload",
-            "/api/dashboard"
-    };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors()
-                .and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable) // Desativa a proteção contra CSRF
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Configura a política de criação de sessão como stateless
                 .authorizeHttpRequests(auth -> auth // Configura as autorizações para requisições HTTP
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
-                        .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
+                        .requestMatchers(ENDPOINTS_PERMIT_ALL).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona o filtro de autenticação
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(customOidcUserService)
+                        )
+                )
                 .build();
     }
 
@@ -79,6 +69,17 @@ public class SecurityConfigurations {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(java.util.List.of("*"));
+        corsConfiguration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
     }
 
 }

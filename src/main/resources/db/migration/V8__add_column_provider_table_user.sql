@@ -1,0 +1,2 @@
+ALTER TABLE users ADD provider VARCHAR(50) DEFAULT 'LOCAL';
+ALTER TABLE users ADD provider_id VARCHAR(100) DEFAULT '';
