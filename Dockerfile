@@ -1,13 +1,11 @@
-# Stage 1: Build
-FROM maven:3.9.0-eclipse-temurin-17-alpine AS build
+FROM eclipse-temurin:17-jdk-focal
+ 
 WORKDIR /app
-COPY pom.xml .
+ 
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+ 
 COPY src ./src
-RUN mvn clean package -DskipTests
-
-# Stage 2: Runtime
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar ./app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ 
+CMD ["./mvnw", "spring-boot:run"
