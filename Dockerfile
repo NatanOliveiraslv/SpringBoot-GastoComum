@@ -1,16 +1,14 @@
-FROM ubuntu:latest AS build
+FROM eclipse-temurin:17-jdk-focal AS builder
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
-COPY . .
+WORKDIR /app
 
-RUN apt-get install maven -y
-RUN mvn clean install
+COPY pom.xml .
+COPY src ./src
+RUN ./mvnw package -DskipTests
 
 FROM openjdk:17-jdk-slim
 
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-COPY --from=build /target/deploy_render-1.0.0.jar app.jar
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+ENTRYPOINT ["java", "-jar", "app.jar"]
