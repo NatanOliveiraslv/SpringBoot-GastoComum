@@ -3,7 +3,7 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gastocomum_api?useTimezone=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:admin}
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     properties:
@@ -21,21 +21,21 @@ spring:
     oauth2:
       client:
         registration:
-            google:
-                client-id: ${GOOGLE_CLIENT_ID}
-                client-secret: ${GOOGLE_CLIENT_SECRET}
-                scope:
-                  - openid
-                  - profile
-                  - email
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
 server:
   error:
     include-stacktrace: never
 logging:
-    level:
-        org:
-        springframework:
-            security: DEBUG
+  level:
+    org:
+    springframework:
+      security: DEBUG
 api:
   security:
     token:
