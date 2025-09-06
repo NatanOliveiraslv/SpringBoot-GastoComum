@@ -1,5 +1,10 @@
 package com.br.gasto_comum.infra.security;
 
+import com.br.gasto_comum.exceptions.UnauthorizedUser;
+import com.br.gasto_comum.models.RefreshToken;
+import com.br.gasto_comum.models.User;
+import com.br.gasto_comum.repositorys.RefreshTokenRepository;
+import com.br.gasto_comum.repositorys.UserRepository;
 import com.br.gasto_comum.services.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,12 +17,19 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
+
+import static com.br.gasto_comum.services.UserService.refreshTokenTtl;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     @Value("${frontend.url}")
     private String FRONTEND_URL;
 
@@ -35,8 +47,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             throw new IllegalStateException("Tipo de usuário não suportado: " + principal.getClass());
         }
 
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnauthorizedUser("Usário não autorizado"));
+
         String token = tokenService.generateToken(username);
-        String redirectUrl = FRONTEND_URL + "/login-success?token=" + token;
+
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setExpiresAt(Instant.now().plus(refreshTokenTtl));
+        refreshTokenRepository.save(refreshToken);
+
+        String redirectUrl = FRONTEND_URL + "/login-success?accessToken=" + token + "&refreshToken=" + refreshToken.getId();
         response.sendRedirect(redirectUrl);
     }
 }

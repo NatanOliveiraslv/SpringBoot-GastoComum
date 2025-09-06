@@ -60,7 +60,9 @@ public class UserService {
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
 
-    private static final Duration refreshTokenTtl = Duration.ofDays(7);
+    // Deixado como public para ser acessado no OAuth2AuthenticationSuccessHandler
+    // Define o tempo de vida do token de atualização (refresh token) como 7 dias
+    public static final Duration refreshTokenTtl = Duration.ofDays(7);
 
     public UserResponseDTO createUser(UserRequestDTO data) {
         if (userRepository.existsByUsername(data.userName()) || userRepository.existsByEmail(data.email())) {
