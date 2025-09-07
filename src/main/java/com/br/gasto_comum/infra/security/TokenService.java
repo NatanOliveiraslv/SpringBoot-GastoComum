@@ -17,7 +17,12 @@ public class TokenService {
 
     @Value("${api.security.token.secret}")
     private String SECRET_KEY;
-    private static final String ISSUER = "API Gasto Comum";
+    @Value("${api.security.token.issuer}")
+    private static String ISSUER;
+    @Value("${api.security.token.expiration}")
+    private int TOKEN_EXPIRATION;
+    @Value("${api.security.token.refresh-expiration}")
+    private int REFRESHTOKEN_EXPIRATION;
 
     public String generateToken(String username) {
         try {
@@ -26,7 +31,22 @@ public class TokenService {
             return JWT.create()
                     .withIssuer(ISSUER) // Define o emissor do token
                     .withIssuedAt(creationDate()) // Define a data de emissão do token
-                    .withExpiresAt(expirationDate()) // Define a data de expiração do token
+                    .withExpiresAt(expirationDate(TOKEN_EXPIRATION)) // Define a data de expiração do token
+                    .withSubject(username) // Define o assunto do token (neste caso, o nome de usuário)
+                    .sign(algorithm); // Assina o token usando o algoritmo especificado
+        } catch (JWTCreationException exception){
+            throw new JWTCreationException("Erro ao gerar token.", exception);
+        }
+    }
+
+    public String generateRefreshToken(String username) {
+        try {
+            // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            return JWT.create()
+                    .withIssuer(ISSUER) // Define o emissor do token
+                    .withIssuedAt(creationDate()) // Define a data de emissão do token
+                    .withExpiresAt(expirationDate(REFRESHTOKEN_EXPIRATION)) // Define a data de expiração do token
                     .withSubject(username) // Define o assunto do token (neste caso, o nome de usuário)
                     .sign(algorithm); // Assina o token usando o algoritmo especificado
         } catch (JWTCreationException exception){
@@ -51,8 +71,8 @@ public class TokenService {
         return ZonedDateTime.now(ZoneOffset.of("-03:00")).toInstant();
     }
 
-    private Instant expirationDate() {
-        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+    private Instant expirationDate(int seconds) {
+        return LocalDateTime.now().plusSeconds(seconds).toInstant(ZoneOffset.of("-03:00"));
     }
 
 }

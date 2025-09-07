@@ -91,20 +91,14 @@ public class UserService {
         // Fetch user and create refresh token
         User user = userRepository.findByUsername(data.username()).orElseThrow(() -> new UnauthorizedUser("Usário não autorizado"));
 
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(user);
-        refreshToken.setExpiresAt(Instant.now().plus(refreshTokenTtl));
-        refreshTokenRepository.save(refreshToken);
+        String refreshToken = tokenService.generateRefreshToken(user.getUsername());
 
-        return new AuthenticationResponseDTO(accessToken, refreshToken.getId());
+        return new AuthenticationResponseDTO(accessToken, refreshToken);
     }
 
-    public AuthenticationResponseDTO refreshToken(UUID refreshToken) {
-        final var refreshTokenEntity = refreshTokenRepository
-                .findByIdAndExpiresAtAfter(refreshToken, Instant.now())
-                .orElseThrow(() -> new ExpiredRefreshToken("Token de atualização inválido ou expirado"));
-
-        final var newAccessToken = tokenService.generateToken(refreshTokenEntity.getUser().getUsername());
+    public AuthenticationResponseDTO refreshToken(String refreshToken) {
+        String subject = tokenService.getSubject(refreshToken); // Valida o token JWT
+        final var newAccessToken = tokenService.generateToken(subject);
         return new AuthenticationResponseDTO(newAccessToken, refreshToken);
     }
 

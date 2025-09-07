@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -28,8 +30,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private TokenService tokenService;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    @Value("${api.security.token.refresh-expiration}")
+    private int REFRESHTOKEN_EXPIRATION;
     @Value("${frontend.url}")
     private String FRONTEND_URL;
 
@@ -50,13 +52,20 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UnauthorizedUser("Usário não autorizado"));
 
         String token = tokenService.generateToken(username);
+        String refreshToken = tokenService.generateRefreshToken(username);
 
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(user);
-        refreshToken.setExpiresAt(Instant.now().plus(refreshTokenTtl));
-        refreshTokenRepository.save(refreshToken);
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)     // não acessível via JS
+                //.secure(true)       // só HTTPS em produção
+                .sameSite("None") // evita CSRF simples
+                .path("/api/auth/refresh-token") // cookie só enviado nesta rota
+                .maxAge(REFRESHTOKEN_EXPIRATION) // 7 dias
+                .build();
 
-        String redirectUrl = FRONTEND_URL + "/login-success?accessToken=" + token + "&refreshToken=" + refreshToken.getId();
+        response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
+        String redirectUrl = FRONTEND_URL + "/login-success?accessToken=" + token;
+
         response.sendRedirect(redirectUrl);
     }
 }
