@@ -1,9 +1,7 @@
 package com.br.gasto_comum.infra.security;
 
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
-import com.br.gasto_comum.models.RefreshToken;
 import com.br.gasto_comum.models.User;
-import com.br.gasto_comum.repositorys.RefreshTokenRepository;
 import com.br.gasto_comum.repositorys.UserRepository;
 import com.br.gasto_comum.services.CustomOAuth2User;
 import jakarta.servlet.ServletException;
@@ -19,9 +17,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.Instant;
-
-import static com.br.gasto_comum.services.UserService.refreshTokenTtl;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {

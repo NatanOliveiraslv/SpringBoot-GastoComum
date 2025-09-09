@@ -52,9 +52,6 @@ public class User implements UserDetails {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @OneToMany (mappedBy = "user" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RefreshToken> refreshTokens = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Provider provider;

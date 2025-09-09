@@ -1,26 +1,19 @@
 package com.br.gasto_comum.services;
 
 import com.br.gasto_comum.dtos.File.FileResponseDTO;
-import com.br.gasto_comum.dtos.spending.SpendingRequestDTO;
-import com.br.gasto_comum.dtos.spending.SpendingResponseDTO;
 import com.br.gasto_comum.dtos.users.AuthenticationRequestDTO;
 import com.br.gasto_comum.dtos.users.UserRequestDTO;
 import com.br.gasto_comum.dtos.users.UserResponseDTO;
-import com.br.gasto_comum.exceptions.ExpiredRefreshToken;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
 import com.br.gasto_comum.exceptions.UserAlreadyRegistered;
 import com.br.gasto_comum.dtos.users.AuthenticationResponseDTO;
 import com.br.gasto_comum.infra.security.SecurityConfigurations;
 import com.br.gasto_comum.infra.security.TokenService;
 import com.br.gasto_comum.models.File;
-import com.br.gasto_comum.models.RefreshToken;
-import com.br.gasto_comum.models.Spending;
 import com.br.gasto_comum.models.User;
-import com.br.gasto_comum.repositorys.RefreshTokenRepository;
 import com.br.gasto_comum.repositorys.UserRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -34,9 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -46,9 +37,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -100,10 +88,6 @@ public class UserService {
         String subject = tokenService.getSubject(refreshToken); // Valida o token JWT
         final var newAccessToken = tokenService.generateToken(subject);
         return new AuthenticationResponseDTO(newAccessToken, refreshToken);
-    }
-
-    public void revokeRefreshToken(UUID refreshToken) {
-        refreshTokenRepository.deleteById(refreshToken);
     }
 
     public Page<UserResponseDTO> listUsers(Pageable pageable, User currentUser) {
