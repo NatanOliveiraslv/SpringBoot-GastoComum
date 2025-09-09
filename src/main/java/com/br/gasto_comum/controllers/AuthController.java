@@ -5,6 +5,7 @@ import com.br.gasto_comum.dtos.users.UserRequestDTO;
 import com.br.gasto_comum.dtos.users.UserResponseDTO;
 import com.br.gasto_comum.dtos.users.AuthenticationResponseDTO;
 import com.br.gasto_comum.exceptions.UnauthorizedUser;
+import com.br.gasto_comum.infra.security.CookieFactory;
 import com.br.gasto_comum.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,6 +28,8 @@ public class AuthController {
     private UserService userService;
     @Value("${api.security.token.refresh-expiration}")
     private int REFRESHTOKEN_EXPIRATION;
+    @Autowired
+    private CookieFactory cookieFactory;
 
     @PostMapping("/register")
     @Transactional
@@ -38,13 +40,7 @@ public class AuthController {
     @PostMapping("/sign-in")
     public ResponseEntity<?> authenticate(@RequestBody @Valid AuthenticationRequestDTO data, HttpServletResponse response) {
         AuthenticationResponseDTO authResponse = userService.authenticate(data);
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", authResponse.refreshToken())
-                .httpOnly(true)     // não acessível via JS
-                //.secure(true)       // só HTTPS em produção
-                .sameSite("None") // evita CSRF simples
-                .path("/api/auth/refresh-token") // cookie só enviado nesta rota
-                .maxAge(REFRESHTOKEN_EXPIRATION) // 7 dias
-                .build();
+        ResponseCookie refreshCookie = cookieFactory.buildRefreshCookie(authResponse.refreshToken());
 
         response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         return ResponseEntity.ok(Map.of("accessToken", authResponse.accessToken()));
@@ -67,12 +63,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> revokeToken(HttpServletResponse response) {
-        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true)
-                //.secure(true)
-                .sameSite("None")
-                .maxAge(0) // expira imediatamente
-                .build();
+        ResponseCookie deleteCookie = cookieFactory.clearRefreshCookie();
 
         response.setHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
 

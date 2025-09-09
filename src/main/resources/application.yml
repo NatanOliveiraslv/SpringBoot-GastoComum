@@ -1,3 +1,5 @@
+app:
+  env: ${APP_ENV:dev} # dev, prod
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gastocomum_api?useTimezone=true&serverTimezone=UTC}
@@ -40,11 +42,11 @@ api:
   security:
     token:
       secret: ${JWT_SECRET}
-      expiration: ${JWT_EXPIRATION:3600} #1 hour #in seconds
+      expiration: ${JWT_EXPIRATION:1800} #30 min #in seconds
       refresh-expiration: ${JWT_REFRESH:604800} #7 days #in seconds
       issuer: api_gastocomum.com.br
 cors:
-  allowedOrigin: http://localhost:3000
+  allowedOrigin: http://192.168.0.13:3000
 file:
   upload-directory: file-storage
 frontend:

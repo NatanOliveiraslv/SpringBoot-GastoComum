@@ -34,6 +34,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private int REFRESHTOKEN_EXPIRATION;
     @Value("${frontend.url}")
     private String FRONTEND_URL;
+    @Autowired
+    private CookieFactory cookieFactory;
 
 
     @Override
@@ -54,13 +56,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String token = tokenService.generateToken(username);
         String refreshToken = tokenService.generateRefreshToken(username);
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)     // não acessível via JS
-                //.secure(true)       // só HTTPS em produção
-                .sameSite("None") // evita CSRF simples
-                .path("/api/auth/refresh-token") // cookie só enviado nesta rota
-                .maxAge(REFRESHTOKEN_EXPIRATION) // 7 dias
-                .build();
+        ResponseCookie refreshCookie = cookieFactory.buildRefreshCookie(refreshToken);
 
         response.setHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 

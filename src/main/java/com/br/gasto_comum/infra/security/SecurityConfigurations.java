@@ -2,6 +2,7 @@ package com.br.gasto_comum.infra.security;
 
 import com.br.gasto_comum.services.CustomOidcUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,8 @@ public class SecurityConfigurations {
     private CustomOidcUserService customOidcUserService;
     @Autowired
     private OAuth2AuthenticationSuccessHandler successHandler;
+    @Value("${cors.allowedOrigin}")
+    private String allowedOrigin;
 
     public static final String [] ENDPOINTS_PERMIT_ALL = {
             "/api/auth/sign-in",
@@ -74,9 +77,10 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(java.util.List.of("*"));
+        corsConfiguration.setAllowedOriginPatterns(java.util.List.of(allowedOrigin));
         corsConfiguration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
