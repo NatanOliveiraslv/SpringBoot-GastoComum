@@ -1,16 +1,21 @@
-FROM ubuntu:latest AS build
+# Etapa 1: Build com Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+LABEL authors="welbermacedo"
+WORKDIR /app
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
-COPY . .
+# Copia o pom.xml e baixa as dependências antes (cache eficiente)
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN apt-get install maven -y
-RUN mvn clean install
+# Copia o restante do código
+COPY src ./src
 
-FROM openjdk:17-jdk-slim
+# Compila o projeto
+RUN mvn clean package -DskipTests
 
+# Etapa 2: Executar o jar
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-COPY --from=build /target/deploy_render-1.0.0.jar app.jar
-
-ENTRYPOINT [ "java", "-jar", "app.jar" ]
+ENTRYPOINT ["java","-jar","app.jar"]
