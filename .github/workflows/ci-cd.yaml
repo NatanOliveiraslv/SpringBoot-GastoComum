@@ -20,10 +20,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Build com Maven
-        uses: maven-actions/setup-maven@v2
+        run: mvn clean package -DskipTests
 
       - name: Arquivos de build
-        run: ls -lh build/libs
+        run: ls -lh target
 
   deploy:
     needs: build
