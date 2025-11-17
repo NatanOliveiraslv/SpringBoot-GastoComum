@@ -41,7 +41,7 @@ logging:
 api:
   security:
     token:
-      secret: ${JWT_SECRET}
+      secret: ${JWT_SECRET:123456}
       expiration: ${JWT_EXPIRATION:1800} #30 min #in seconds
       refresh-expiration: ${JWT_REFRESH:604800} #7 days #in seconds
       issuer: api_gastocomum.com.br

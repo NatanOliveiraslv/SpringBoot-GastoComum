@@ -1,17 +1,19 @@
-app:
-  env: ${APP_ENV:dev} # dev, prod
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/gastocomum_api?useTimezone=true&serverTimezone=UTC}
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:admin}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;NON_KEYWORDS=VALUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    properties:
-      hibernate:
-        type:
-          preferred_uuid_jdbc_type: CHAR
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
   web:
     resources:
       add-mappings: true
@@ -41,13 +43,13 @@ logging:
 api:
   security:
     token:
-      secret: ${JWT_SECRET}
+      secret: ${JWT_SECRET:123456}
       expiration: ${JWT_EXPIRATION:1800} #30 min #in seconds
       refresh-expiration: ${JWT_REFRESH:604800} #7 days #in seconds
       issuer: api_gastocomum.com.br
 cors:
-  allowedOrigin: http://192.168.0.13:3000
+  allowedOrigin: http://localhost:3000
 file:
   upload-directory: file-storage
 frontend:
-  url: http://192.168.0.13:3000
+  url: http://localhost:3000
