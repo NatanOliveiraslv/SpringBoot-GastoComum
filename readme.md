@@ -1,13 +1,18 @@
 # Gasto Comum
 
 ## Visão Geral
-Gasto Comum é um projeto baseado em **Java** desenvolvido para gerenciar despesas compartilhadas. Ele utiliza o framework **Spring Boot** e integra-se a um banco de dados utilizando **SQL**. O projeto inclui funcionalidades como autenticação de usuários, gerenciamento de despesas e tratamento de exceções.
+Gasto Comum é um projeto baseado em **Java** desenvolvido para gerenciar despesas compartilhadas. Ele utiliza o framework **Spring Boot** e integra-se a um banco de dados utilizando **SQL**. O projeto inclui funcionalidades como autenticação de usuários, gerenciamento de despesas, divisão de contas, tratamento de exceções e segurança avançada.
 
 ## Funcionalidades
-- **Autenticação de Usuários**: Autenticação segura utilizando tokens.
+- **Autenticação de Usuários**: Autenticação segura utilizando tokens JWT e OAuth2.
 - **Gerenciamento de Despesas**: Controle de despesas compartilhadas entre usuários.
+- **Divisão de Contas**: Registro detalhado de como cada despesa foi dividida entre os participantes.
 - **Tratamento de Exceções Personalizado**: Tratamento de erros com mensagens significativas.
-- **Segurança**: Implementação de filtro de segurança para validação de requisições e proteção de endpoints.
+- **Segurança**: Filtro de segurança para validação de requisições, proteção de endpoints e integração com OAuth2.
+- **Cadastro e Consulta de Usuários**: Endpoints para registro, consulta, atualização e remoção de usuários.
+- **Cadastro e Consulta de Despesas**: Endpoints para registro, consulta, atualização e remoção de despesas.
+- **Listagem de Despesas por Usuário**: Consulta de todas as despesas associadas a um usuário.
+- **Refresh Token**: Endpoint para renovação de tokens de autenticação.
 
 ## Tecnologias
 - **Java**
@@ -15,54 +20,19 @@ Gasto Comum é um projeto baseado em **Java** desenvolvido para gerenciar despes
 - **Maven**
 - **SQL**
 - **Spring Security**
+- **OAuth2**
 
-## Estrutura do Projeto
-- `src/main/java/com/br/gasto_comum/infra`: Contém classes relacionadas à infraestrutura, como manipuladores de exceções e filtros de segurança.
-- `src/main/java/com/br/gasto_comum/infra/security`: Contém configurações e filtros relacionados à segurança.
-- `src/main/java/com/br/gasto_comum/exceptions`: Classes de exceções personalizadas para tratamento de erros específicos.
-- `src/main/java/com/br/gasto_comum/users`: Classes e repositórios relacionados a usuários.
-- `src/main/java/com/br/gasto_comum/expenses`: Classes e repositórios relacionados a despesas.
-
-## Entidades
-### User
-Representa um usuário no sistema. Cada usuário possui:
-- **id**: Identificador único.
-- **name**: Nome completo do usuário.
-- **email**: Endereço de e-mail (utilizado para login).
-- **password**: Senha criptografada para autenticação.
-
-### Spending
-Representa uma despesa compartilhada. Cada despesa possui:
-- **id**: Identificador único.
-- **description**: Descrição breve da despesa.
-- **amount**: Valor total da despesa.
-- **date**: Data de criação da despesa.
-- **participants**: Lista de usuários que compartilham a despesa.
-
-### ExpensesDividedAccounts
-Representa o detalhamento de como as despesas foram divididas entre os participantes. Cada registro possui:
-- **id**: Identificador único.
-- **user**: Usuário associado à divisão da despesa.
-- **spending**: Despesa relacionada.
-- **amountOwed**: Valor que o usuário deve ou pagou.
-
-## Componentes Principais
-### Tratamento de Exceções
-As exceções personalizadas são tratadas na classe `RestExceptionHandler`, que mapeia exceções para códigos de status HTTP e mensagens de erro apropriadas.
-
-### Segurança
-A classe `SecurityFilter` garante que apenas usuários autenticados possam acessar endpoints protegidos. Ela valida tokens e configura o contexto de segurança para a requisição.
 
 ## Como Executar
 1. Clone o repositório:
    ```bash
    git clone <repository-url>
    ```
-2. Navegue até o diretório do projeto:
+2. Acesse o diretório:
    ```bash
    cd gasto_comum
    ```
-3. Compile o projeto utilizando o Maven:
+3. Compile com Maven:
    ```bash
    mvn clean install
    ```
@@ -72,21 +42,50 @@ A classe `SecurityFilter` garante que apenas usuários autenticados possam acess
    ```
 
 ## Endpoints
-### Endpoints Públicos
-- Endpoints de autenticação e registro (não requerem autenticação).
 
-### Endpoints Protegidos
-- Endpoints de gerenciamento de despesas e usuários (requerem autenticação).
+### Autenticação
+- `POST /api/auth/register` — Registrar usuário
+- `POST /api/auth/sign-in` — Login
+- `POST /api/auth/refresh-token` — Renovar token
+- `POST /api/auth/logout` — Logout
 
-## Configuração
-- Atualize as configurações de conexão com o banco de dados no arquivo `application.properties` para corresponder ao seu ambiente.
-- Defina os endpoints públicos em `SecurityConfigurations.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED`.
+### Usuário
+- `GET /api/user/me` — Dados do usuário logado
+- `GET /api/user` — Listar usuários (com busca)
+- `POST /api/user` (multipart/form-data) — Upload foto de perfil
+- `GET /api/user/profile-picture/download/{userId}` — Download foto de perfil
+
+### Despesas
+- `POST /api/spending` (multipart/form-data) — Criar despesa (com comprovante)
+- `GET /api/spending` — Listar despesas (com filtros)
+- `PUT /api/spending` (multipart/form-data) — Atualizar despesa
+- `GET /api/spending/{id}` — Detalhar despesa
+- `DELETE /api/spending/{id}` — Remover despesa
+- `GET /api/spending/voucher/download/{fileName}` — Download comprovante
+
+### Grupos
+- `POST /api/group` — Criar grupo
+- `POST /api/group/add/spending` — Adicionar despesa ao grupo
+- `GET /api/group` — Listar grupos
+- `GET /api/group/{id}` — Detalhar grupo
+
+### Divisão de Contas
+- `POST /api/expenses-divided-accounts` — Registrar divisão de despesa
+- `GET /api/expenses-divided-accounts` — Listar divisões (com filtros)
+- `PUT /api/expenses-divided-accounts/pay/{id}` — Pagar divisão
+
+### Dashboard
+- `GET /api/dashboard` — Dados financeiros do usuário
 
 ## Tratamento de Erros
-A aplicação retorna mensagens de erro estruturadas no formato JSON para exceções, como:
+Respostas estruturadas em JSON, por exemplo:
 ```json
 {
   "status": "NOT_FOUND",
   "message": "Recurso não encontrado"
 }
 ```
+
+---
+
+> Atualize conforme novas funcionalidades forem implementadas.

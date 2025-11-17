@@ -46,8 +46,8 @@ api:
       refresh-expiration: ${JWT_REFRESH:604800} #7 days #in seconds
       issuer: api_gastocomum.com.br
 cors:
-  allowedOrigin: http://192.168.0.13:3000
+  allowedOrigin: http://localhost:3000
 file:
   upload-directory: file-storage
 frontend:
-  url: http://192.168.0.13:3000
+  url: http://localhost:3000
