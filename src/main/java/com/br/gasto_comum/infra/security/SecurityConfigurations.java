@@ -61,6 +61,13 @@ public class SecurityConfigurations {
                                 .oidcUserService(customOidcUserService)
                         )
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, authException) -> {
+                            res.setStatus(401);
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"error\":\"Unauthorized\"}");
+                        })
+                )
                 .build();
     }
 
