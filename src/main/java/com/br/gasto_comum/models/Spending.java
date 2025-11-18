@@ -37,7 +37,7 @@ public class Spending {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "amount", nullable = false)
     private Double value;
 
     @OneToOne

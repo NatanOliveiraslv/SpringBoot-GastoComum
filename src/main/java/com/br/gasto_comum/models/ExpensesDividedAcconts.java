@@ -33,7 +33,7 @@ public class ExpensesDividedAcconts {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(nullable = false)
+    @Column(name = "amount", nullable = false)
     private Double value;
 
     private LocalDateTime date_payment;

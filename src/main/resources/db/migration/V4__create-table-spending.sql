@@ -2,7 +2,7 @@ CREATE TABLE spending (
     id CHAR(36) PRIMARY KEY,
     type VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
-    value DOUBLE NOT NULL,
+    amount DOUBLE NOT NULL,
     description VARCHAR(255),
     user_id CHAR(36) NOT NULL,
     voucher_id BIGINT,
