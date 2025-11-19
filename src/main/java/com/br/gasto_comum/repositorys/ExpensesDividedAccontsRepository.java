@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Repository
 public interface ExpensesDividedAccontsRepository extends JpaRepository<ExpensesDividedAcconts, UUID>, JpaSpecificationExecutor<ExpensesDividedAcconts> {
-    List<ExpensesDividedAcconts> findByUser(User user);
     Long countByUser(User user);
     @Query("SELECT SUM(s.value) FROM ExpensesDividedAcconts s WHERE s.user = :user")
     Double totalValueExpensesDividedAccountsByUser(User user);
