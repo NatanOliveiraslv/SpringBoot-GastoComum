@@ -9,10 +9,12 @@ import com.br.gasto_comum.infra.security.SecurityConfigurations;
 import com.br.gasto_comum.infra.security.TokenService;
 import com.br.gasto_comum.models.User;
 import com.br.gasto_comum.repositorys.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +50,11 @@ class UserServiceTest {
     private TokenService tokenService;
     @Mock
     private SecurityConfigurations securityConfiguration;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     @DisplayName("Criar usuário com sucesso")
